@@ -1,0 +1,51 @@
+name: Nauron Contracts CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nauron-contracts-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+
+    steps:
+      - name: Checkout nauron-contracts
+        uses: actions/checkout@v6
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.95.0
+
+      - name: Install rustfmt and clippy
+        run: rustup component add rustfmt clippy
+
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run fmt
+        run: cargo fmt --all --check
+
+      - name: Run clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Enforce LOC limit
+        run: python3 scripts/loc_check.py 250 rs
+
+      - name: Run tests
+        run: cargo test --all-targets --all-features

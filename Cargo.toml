@@ -1,0 +1,20 @@
+[package]
+name = "nauron-contracts"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+description = "Shared Rust contracts for Nauron services and workers"
+readme = "README.md"
+repository = "https://github.com/nauron-ai/nauron-contracts"
+license = "Apache-2.0"
+
+[dependencies]
+chrono = { version = "0.4.44", default-features = false, features = ["std", "serde", "clock"] }
+serde = { version = "1.0.214", features = ["derive"] }
+serde_json = "1.0.149"
+sqlx = { version = "0.8", optional = true, default-features = false, features = ["derive", "postgres"] }
+uuid = { version = "1.21", features = ["v4", "serde"] }
+utoipa = { version = "5.4.0", features = ["uuid", "chrono"] }
+
+[features]
+sqlx = ["dep:sqlx"]
