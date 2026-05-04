@@ -17,15 +17,12 @@ pub struct VectorSearchRequest {
     pub lang: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alpha: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub session_id: Option<String>,
 }
 
 pub struct VectorTarget;
 impl VectorTarget {
     pub const PARAGRAPH: &'static str = "paragraph";
     pub const DOCUMENT: &'static str = "document";
-    pub const CHAT: &'static str = "chat_history";
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
@@ -46,8 +43,6 @@ pub struct VectorSearchItem {
     pub point_type: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entity_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub session_id: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]

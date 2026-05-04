@@ -2,7 +2,7 @@
 
 Shared Rust contracts for Nauron services and worker messages.
 
-This crate keeps service boundaries explicit. Producers and consumers use the same typed payloads for jobs, progress events, search requests, chat requests, health responses, and condition evaluation responses instead of duplicating JSON shapes across repositories.
+This crate keeps service boundaries explicit. Producers and consumers use the same typed payloads for jobs, progress events, search requests, health responses, and condition evaluation responses instead of duplicating JSON shapes across repositories.
 
 ## What It Contains
 
@@ -13,7 +13,6 @@ This crate keeps service boundaries explicit. Producers and consumers use the sa
 | Ingest | Structured extraction start messages, progress events, results, schema fields, and token usage. |
 | Conditions | Condition evaluation jobs, options, evidence, results, and validation helpers. |
 | Vector | Semantic/vector search request and response DTOs. |
-| Chat | Chat, streaming, session, reasoning, and prompt DTOs shared with the API layer. |
 | Health | Service and component health response DTOs. |
 
 ## Install
