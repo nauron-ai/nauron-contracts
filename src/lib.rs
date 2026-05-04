@@ -1,6 +1,5 @@
 //! Shared contracts for Nauron services and workers.
 
-pub mod chat;
 pub mod common;
 pub mod conditions;
 pub mod events;
