@@ -149,7 +149,12 @@ pub enum KnowledgeCompileEvent {
 
 #[cfg(test)]
 mod tests {
-    use super::{KnowledgeCompileOptions, KnowledgeCompileStage, KnowledgeCompileStart};
+    use super::{
+        KnowledgeCompileEvent, KnowledgeCompileOptions, KnowledgeCompileResult,
+        KnowledgeCompileStage, KnowledgeCompileStart,
+    };
+    use chrono::Utc;
+    use uuid::Uuid;
 
     #[test]
     fn knowledge_compile_options_default_to_english() {
@@ -183,5 +188,30 @@ mod tests {
             KnowledgeCompileStage::Compiled
         ));
         assert!("unknown".parse::<KnowledgeCompileStage>().is_err());
+    }
+
+    #[test]
+    fn knowledge_compile_result_and_event_tags_are_stable() {
+        let result = KnowledgeCompileResult::Failure {
+            schema_version: Default::default(),
+            job_id: Uuid::nil(),
+            context_id: 12,
+            stage: KnowledgeCompileStage::Evidence,
+            message: "failed".to_string(),
+            details: None,
+            occurred_at: Utc::now(),
+        };
+
+        let result_json = serde_json::to_value(&result).unwrap();
+        assert_eq!(
+            result_json.get("status").and_then(|value| value.as_str()),
+            Some("failure")
+        );
+
+        let event_json = serde_json::to_value(KnowledgeCompileEvent::Result(result)).unwrap();
+        assert_eq!(
+            event_json.get("type").and_then(|value| value.as_str()),
+            Some("result")
+        );
     }
 }
