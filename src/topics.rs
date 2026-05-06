@@ -18,6 +18,9 @@ pub const INGEST_RESULT_TOPIC: &str = "ingest.result";
 pub const CONDITIONS_EVALUATE_START_TOPIC: &str = "conditions.evaluate.start";
 pub const CONDITIONS_EVALUATE_PROGRESS_TOPIC: &str = "conditions.evaluate.progress";
 pub const CONDITIONS_EVALUATE_RESULT_TOPIC: &str = "conditions.evaluate.result";
+pub const KNOWLEDGE_COMPILE_START_TOPIC: &str = "knowledge.compile.start";
+pub const KNOWLEDGE_COMPILE_PROGRESS_TOPIC: &str = "knowledge.compile.progress";
+pub const KNOWLEDGE_COMPILE_RESULT_TOPIC: &str = "knowledge.compile.result";
 /// Topic emitted whenever ontologies are refreshed.
 pub const ONTOLOGY_UPDATED_TOPIC: &str = "ontology.updated";
 /// Topic requesting a context-level reprocessing cycle.

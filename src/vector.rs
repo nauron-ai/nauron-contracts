@@ -8,6 +8,8 @@ pub struct VectorSearchRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub context_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub session_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub doc_id: Option<Uuid>,
     #[serde(default = "default_target_paragraph")]
     pub target: String,
@@ -39,6 +41,7 @@ pub struct VectorSearchItem {
     pub score: f32,
     pub iri: String,
     pub context_id: String,
+    pub session_id: Option<String>,
     pub title: Option<String>,
     pub point_type: String,
     #[serde(skip_serializing_if = "Option::is_none")]
