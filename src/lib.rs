@@ -5,6 +5,7 @@ pub mod conditions;
 pub mod events;
 pub mod health;
 pub mod ingest;
+pub mod knowledge;
 pub mod rdf;
 pub mod requests;
 pub mod topics;
@@ -19,13 +20,18 @@ pub use ingest::{
     IngestEvent, IngestProgress, IngestResult, IngestSchemaField, IngestStage, IngestStart,
     IngestTokensUsed,
 };
+pub use knowledge::{
+    KnowledgeCompileEvent, KnowledgeCompileOptions, KnowledgeCompileProgress,
+    KnowledgeCompileResult, KnowledgeCompileStage, KnowledgeCompileStart,
+};
 pub use rdf::{PipelineTimings, RdfStage};
 pub use requests::{MirRequest, RdfStart};
 pub use topics::{
     CONDITIONS_EVALUATE_PROGRESS_TOPIC, CONDITIONS_EVALUATE_RESULT_TOPIC,
     CONDITIONS_EVALUATE_START_TOPIC, INGEST_PROGRESS_TOPIC, INGEST_RESULT_TOPIC,
-    INGEST_START_TOPIC, MIR_PROGRESS_TOPIC, MIR_REQUEST_TOPIC, MIR_RESULT_TOPIC, MIR_RETRY_TOPIC,
-    ONTOLOGY_UPDATED_TOPIC, RDF_PROGRESS_TOPIC, RDF_RESULT_TOPIC, RDF_START_TOPIC,
+    INGEST_START_TOPIC, KNOWLEDGE_COMPILE_PROGRESS_TOPIC, KNOWLEDGE_COMPILE_RESULT_TOPIC,
+    KNOWLEDGE_COMPILE_START_TOPIC, MIR_PROGRESS_TOPIC, MIR_REQUEST_TOPIC, MIR_RESULT_TOPIC,
+    MIR_RETRY_TOPIC, ONTOLOGY_UPDATED_TOPIC, RDF_PROGRESS_TOPIC, RDF_RESULT_TOPIC, RDF_START_TOPIC,
     REPROCESS_CONTEXT_TOPIC,
 };
 pub use types::{
