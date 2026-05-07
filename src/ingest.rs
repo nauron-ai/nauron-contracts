@@ -49,7 +49,7 @@ pub struct IngestStart {
     #[serde(default)]
     pub schema_version: SchemaVersion,
     pub job_id: Uuid,
-    pub context_id: i32,
+    pub context_id: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_id: Option<String>,
     pub schema: Vec<IngestSchemaField>,
@@ -113,7 +113,7 @@ pub struct IngestProgress {
     #[serde(default)]
     pub schema_version: SchemaVersion,
     pub job_id: Uuid,
-    pub context_id: i32,
+    pub context_id: i64,
     pub stage: IngestStage,
     pub percent: u8,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -134,7 +134,7 @@ pub enum IngestResult {
         #[serde(default)]
         schema_version: SchemaVersion,
         job_id: Uuid,
-        context_id: i32,
+        context_id: i64,
         data: Value,
         language: String,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -145,7 +145,7 @@ pub enum IngestResult {
         #[serde(default)]
         schema_version: SchemaVersion,
         job_id: Uuid,
-        context_id: i32,
+        context_id: i64,
         message: String,
         #[serde(skip_serializing_if = "Option::is_none")]
         details: Option<String>,

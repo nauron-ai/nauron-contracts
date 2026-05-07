@@ -14,7 +14,7 @@ pub struct MirProgress {
     /// Identifier of the job being tracked.
     pub job_id: Uuid,
     /// Context identifier the job belongs to.
-    pub context_id: i32,
+    pub context_id: i64,
     /// Stage emitted by the worker.
     pub stage: MirStage,
     /// Percentage of completion (0-100).
@@ -38,7 +38,7 @@ pub enum MirResult {
         /// Identifier of the processed job.
         job_id: Uuid,
         /// Context identifier where the job comes from.
-        context_id: i32,
+        context_id: i64,
         /// Uploaded artifacts.
         artifacts: Vec<ArtifactRef>,
         /// Optional aggregate statistics.
@@ -55,7 +55,7 @@ pub enum MirResult {
         /// Identifier of the job.
         job_id: Uuid,
         /// Context identifier where the job comes from.
-        context_id: i32,
+        context_id: i64,
         /// Failure category.
         kind: FailureKind,
         /// Human-readable description of the error.
@@ -74,7 +74,7 @@ pub enum MirResult {
         /// Identifier of the job.
         job_id: Uuid,
         /// Context identifier where the job comes from.
-        context_id: i32,
+        context_id: i64,
         /// Failure category.
         kind: FailureKind,
         /// Human-readable description of the error.
@@ -132,7 +132,7 @@ pub struct RdfProgress {
     pub schema_version: SchemaVersion,
     pub job_id: Uuid,
     pub doc_id: Uuid,
-    pub context_id: i32,
+    pub context_id: i64,
     pub stage: RdfStage,
     pub percent: u8,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -154,7 +154,7 @@ pub enum RdfResult {
         schema_version: SchemaVersion,
         job_id: Uuid,
         doc_id: Uuid,
-        context_id: i32,
+        context_id: i64,
         completed_at: DateTime<Utc>,
         timings: PipelineTimings,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -165,7 +165,7 @@ pub enum RdfResult {
         schema_version: SchemaVersion,
         job_id: Uuid,
         doc_id: Uuid,
-        context_id: i32,
+        context_id: i64,
         stage: RdfStage,
         kind: FailureKind,
         message: String,
@@ -178,7 +178,7 @@ pub enum RdfResult {
         schema_version: SchemaVersion,
         job_id: Uuid,
         doc_id: Uuid,
-        context_id: i32,
+        context_id: i64,
         stage: RdfStage,
         kind: FailureKind,
         message: String,
