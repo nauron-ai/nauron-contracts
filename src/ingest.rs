@@ -60,6 +60,8 @@ pub struct IngestStart {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub knowledge_revision: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub submitted_at: Option<DateTime<Utc>>,
 }
 
@@ -160,7 +162,7 @@ pub enum IngestEvent {
 
 #[cfg(test)]
 mod tests {
-    use super::{IngestSchemaField, IngestStage};
+    use super::{IngestSchemaField, IngestStage, IngestStart};
 
     #[test]
     fn ingest_schema_field_accepts_legacy_scalar_type() {
@@ -222,6 +224,38 @@ mod tests {
                 .to_string()
                 .contains("ingest schema field type must be a string or object")
         );
+    }
+
+    #[test]
+    fn ingest_start_accepts_optional_knowledge_revision() {
+        let start: IngestStart = serde_json::from_value(serde_json::json!({
+            "job_id": "00000000-0000-0000-0000-000000000001",
+            "context_id": 42,
+            "schema": [{
+                "key": "summary",
+                "description": "summary"
+            }],
+            "knowledge_revision": 7
+        }))
+        .unwrap();
+
+        assert_eq!(start.knowledge_revision, Some(7));
+    }
+
+    #[test]
+    fn ingest_start_omits_empty_knowledge_revision() {
+        let start: IngestStart = serde_json::from_value(serde_json::json!({
+            "job_id": "00000000-0000-0000-0000-000000000001",
+            "context_id": 42,
+            "schema": [{
+                "key": "summary",
+                "description": "summary"
+            }]
+        }))
+        .unwrap();
+        let value = serde_json::to_value(start).unwrap();
+
+        assert!(value.get("knowledge_revision").is_none());
     }
 
     #[test]
