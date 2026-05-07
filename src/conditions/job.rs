@@ -13,7 +13,7 @@ pub struct ConditionsEvaluateStart {
     #[serde(default)]
     pub schema_version: SchemaVersion,
     pub job_id: Uuid,
-    pub context_id: i32,
+    pub context_id: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document_hint: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -77,7 +77,7 @@ pub struct ConditionsEvaluateProgress {
     #[serde(default)]
     pub schema_version: SchemaVersion,
     pub job_id: Uuid,
-    pub context_id: i32,
+    pub context_id: i64,
     pub stage: ConditionsEvaluateStage,
     pub percent: u8,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -98,7 +98,7 @@ pub enum ConditionsEvaluateResult {
         #[serde(default)]
         schema_version: SchemaVersion,
         job_id: Uuid,
-        context_id: i32,
+        context_id: i64,
         response: ConditionEvaluationResponse,
         completed_at: DateTime<Utc>,
     },
@@ -106,7 +106,7 @@ pub enum ConditionsEvaluateResult {
         #[serde(default)]
         schema_version: SchemaVersion,
         job_id: Uuid,
-        context_id: i32,
+        context_id: i64,
         error: super::types::ConditionErrorResponse,
         occurred_at: DateTime<Utc>,
     },

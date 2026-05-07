@@ -13,7 +13,7 @@ pub struct MirRequest {
     /// Globally unique job identifier.
     pub job_id: Uuid,
     /// Identifier of the context the document belongs to.
-    pub context_id: i32,
+    pub context_id: i64,
     /// Optional identifier of the user initiating the request.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_id: Option<String>,
@@ -48,7 +48,7 @@ pub struct RdfStart {
     pub doc_id: Uuid,
     /// Context graph the document belongs to.
     #[serde(default)]
-    pub context_id: i32,
+    pub context_id: i64,
     /// URI pointing at the UTF-8 text to ingest (HTTP/S3/etc.).
     pub text_uri: String,
     /// Upstream/source identifier that uniquely describes the asset.

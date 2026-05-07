@@ -12,7 +12,7 @@ pub struct KnowledgeCompileStart {
     #[serde(default)]
     pub schema_version: SchemaVersion,
     pub job_id: Uuid,
-    pub context_id: i32,
+    pub context_id: i64,
     pub revision: i32,
     #[serde(default)]
     pub options: KnowledgeCompileOptions,
@@ -100,7 +100,7 @@ pub struct KnowledgeCompileProgress {
     #[serde(default)]
     pub schema_version: SchemaVersion,
     pub job_id: Uuid,
-    pub context_id: i32,
+    pub context_id: i64,
     pub stage: KnowledgeCompileStage,
     pub percent: u8,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -121,7 +121,7 @@ pub enum KnowledgeCompileResult {
         #[serde(default)]
         schema_version: SchemaVersion,
         job_id: Uuid,
-        context_id: i32,
+        context_id: i64,
         dossier_id: Uuid,
         dossier_name: String,
         revision: i32,
@@ -131,7 +131,7 @@ pub enum KnowledgeCompileResult {
         #[serde(default)]
         schema_version: SchemaVersion,
         job_id: Uuid,
-        context_id: i32,
+        context_id: i64,
         stage: KnowledgeCompileStage,
         message: String,
         #[serde(skip_serializing_if = "Option::is_none")]
