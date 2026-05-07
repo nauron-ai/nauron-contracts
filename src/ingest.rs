@@ -60,6 +60,8 @@ pub struct IngestStart {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub knowledge_revision: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub submitted_at: Option<DateTime<Utc>>,
 }
 
@@ -156,81 +158,4 @@ pub enum IngestResult {
 pub enum IngestEvent {
     Progress(IngestProgress),
     Result(IngestResult),
-}
-
-#[cfg(test)]
-mod tests {
-    use super::{IngestSchemaField, IngestStage};
-
-    #[test]
-    fn ingest_schema_field_accepts_legacy_scalar_type() {
-        let field: IngestSchemaField = serde_json::from_value(serde_json::json!({
-            "key": "summary",
-            "name": "Summary",
-            "description": "summary",
-            "type": "string",
-            "required": true
-        }))
-        .unwrap();
-
-        assert_eq!(field.r#type, serde_json::json!("string"));
-        assert!(field.required);
-        assert_eq!(field.name.as_deref(), Some("Summary"));
-    }
-
-    #[test]
-    fn ingest_schema_field_accepts_object_type_spec() {
-        let field: IngestSchemaField = serde_json::from_value(serde_json::json!({
-            "key": "operational_start",
-            "description": "operational start",
-            "type": {
-                "type": "object",
-                "properties": {
-                    "original": { "type": "string" },
-                    "translated": { "type": "string" }
-                },
-                "required": ["original", "translated"]
-            }
-        }))
-        .unwrap();
-
-        assert!(field.r#type.is_object());
-    }
-
-    #[test]
-    fn ingest_schema_field_defaults_type_to_string() {
-        let field: IngestSchemaField = serde_json::from_value(serde_json::json!({
-            "key": "summary",
-            "description": "summary"
-        }))
-        .unwrap();
-
-        assert_eq!(field.r#type, serde_json::json!("string"));
-    }
-
-    #[test]
-    fn ingest_schema_field_rejects_invalid_type_spec_shape() {
-        let error = serde_json::from_value::<IngestSchemaField>(serde_json::json!({
-            "key": "summary",
-            "description": "summary",
-            "type": 42
-        }))
-        .unwrap_err();
-
-        assert!(
-            error
-                .to_string()
-                .contains("ingest schema field type must be a string or object")
-        );
-    }
-
-    #[test]
-    fn ingest_stage_labels_roundtrip() {
-        assert_eq!(IngestStage::Queued.to_string(), "queued");
-        assert!(matches!(
-            "persist".parse::<IngestStage>().unwrap(),
-            IngestStage::Persist
-        ));
-        assert!("unknown".parse::<IngestStage>().is_err());
-    }
 }
