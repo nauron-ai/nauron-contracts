@@ -1,11 +1,8 @@
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use nauron_contracts::conditions::ConditionsEvaluateEvent;
-use nauron_contracts::{IngestEvent, MirEvent, SchemaVersion};
-
-pub const NAURON_CALLBACK_RECEIVED_MESSAGE_TYPE: &str = "nauron_callback_received";
+use nauron_contracts::{IngestEvent, MirEvent};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -51,16 +48,4 @@ pub enum NauronCallback {
         context_id: i64,
         event: ConditionsEvaluateEvent,
     },
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NauronCallbackEventMessage {
-    #[serde(default)]
-    pub schema_version: SchemaVersion,
-    pub message_type: String,
-    pub event_id: Uuid,
-    pub received_at: DateTime<Utc>,
-    pub nauron_job_id: Uuid,
-    pub status: NauronCallbackStatus,
-    pub callback: NauronCallback,
 }
