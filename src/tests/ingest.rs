@@ -108,79 +108,9 @@ fn ingest_stage_labels_roundtrip() {
 
 #[test]
 fn ingest_result_success_carries_evidence_and_knowledge() {
-    let event: IngestEvent = serde_json::from_value(json!({
-        "type": "result",
-        "status": "success",
-        "schema_version": 1,
-        "job_id": "00000000-0000-0000-0000-000000000001",
-        "context_id": 42,
-        "data": {
-            "rent_amount": "100 EUR"
-        },
-        "evidence": [{
-            "path": "rent_amount",
-            "anchors": [{
-                "doc_id": "00000000-0000-0000-0000-000000000002",
-                "paragraph_id": "p1",
-                "quote": "The rent amount is 100 EUR.",
-                "explanation": "source quote"
-            }]
-        }],
-        "knowledge": {
-            "dossier": {
-                "id": "00000000-0000-0000-0000-000000000003",
-                "context_id": 42,
-                "name": "Agreement",
-                "role": "runtime_knowledge_compiler",
-                "scope": "context",
-                "revision": 1,
-                "metadata": {
-                    "require_conflicts_with": false,
-                    "max_conflict_nodes": null
-                }
-            },
-            "compiled_knowledge_view": {
-                "dossier_name": "Agreement",
-                "brief": "Agreement brief",
-                "active_surfaces": [{
-                    "label": "Rent",
-                    "summary": "The rent amount is 100 EUR.",
-                    "evidence": [{
-                        "doc_id": "00000000-0000-0000-0000-000000000002",
-                        "paragraph_id": "p1",
-                        "quote": "The rent amount is 100 EUR."
-                    }],
-                    "timeline_node_id": "node-1"
-                }],
-                "temporal_hints": [],
-                "conflict_hints": [],
-                "retrieval_hints": []
-            },
-            "timeline_view": {
-                "nodes": [{
-                    "id": "node-1",
-                    "kind": "document",
-                    "status": "active",
-                    "effective_from": "2024-01-01",
-                    "effective_to": null,
-                    "evidence": [{
-                        "doc_id": "00000000-0000-0000-0000-000000000002",
-                        "paragraph_id": "p1",
-                        "quote": "The rent amount is 100 EUR."
-                    }],
-                    "label": "Agreement",
-                    "summary": "The rent amount is 100 EUR."
-                }],
-                "edges": []
-            }
-        },
-        "language": "en",
-        "tokens_used": {
-            "prompt": 10,
-            "completion": 5
-        },
-        "completed_at": "2026-05-13T00:00:00Z"
-    }))
+    let event: IngestEvent = serde_json::from_str(include_str!(
+        "fixtures/ingest_result_success_with_knowledge.json"
+    ))
     .unwrap();
 
     let result = match event {
