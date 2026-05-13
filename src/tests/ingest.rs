@@ -1,6 +1,6 @@
 use serde_json::json;
 
-use crate::ingest::{IngestSchemaField, IngestStage, IngestStart};
+use crate::ingest::{IngestEvent, IngestResult, IngestSchemaField, IngestStage, IngestStart};
 
 #[test]
 fn ingest_schema_field_accepts_legacy_scalar_type() {
@@ -104,4 +104,45 @@ fn ingest_stage_labels_roundtrip() {
         IngestStage::Persist
     ));
     assert!("unknown".parse::<IngestStage>().is_err());
+}
+
+#[test]
+fn ingest_result_success_carries_evidence_and_knowledge() {
+    let event: IngestEvent = serde_json::from_str(include_str!(
+        "fixtures/ingest_result_success_with_knowledge.json"
+    ))
+    .unwrap();
+
+    let result = match event {
+        IngestEvent::Result(result) => Some(result),
+        IngestEvent::Progress(_) => None,
+    }
+    .unwrap();
+    let (context_id, evidence, knowledge) = match result.as_ref() {
+        IngestResult::Success {
+            context_id,
+            evidence,
+            knowledge,
+            ..
+        } => Some((context_id, evidence, knowledge)),
+        IngestResult::Failure { .. } => None,
+    }
+    .unwrap();
+
+    assert_eq!(*context_id, 42);
+    assert_eq!(evidence[0].path, "rent_amount");
+    assert_eq!(evidence[0].anchors[0].paragraph_id, "p1");
+    let knowledge = knowledge.as_ref().unwrap();
+    assert_eq!(knowledge.dossier.name, "Agreement");
+    assert_eq!(knowledge.dossier.revision, 1);
+    assert!(!knowledge.dossier.metadata.require_conflicts_with);
+    assert_eq!(knowledge.compiled_knowledge_view.dossier_name, "Agreement");
+    assert_eq!(knowledge.compiled_knowledge_view.active_surfaces.len(), 1);
+    assert_eq!(
+        knowledge.compiled_knowledge_view.active_surfaces[0].timeline_node_id,
+        "node-1"
+    );
+    assert_eq!(knowledge.timeline_view.nodes.len(), 1);
+    assert_eq!(knowledge.timeline_view.nodes[0].id, "node-1");
+    assert_eq!(knowledge.timeline_view.nodes[0].evidence.len(), 1);
 }

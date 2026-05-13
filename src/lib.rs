@@ -6,6 +6,7 @@ pub mod events;
 pub mod health;
 pub mod ingest;
 pub mod knowledge;
+pub mod knowledge_artifacts;
 pub mod rdf;
 pub mod requests;
 pub mod topics;
@@ -17,12 +18,17 @@ pub use events::{
     RelationMissingReason, RelationMissingStat,
 };
 pub use ingest::{
-    IngestEvent, IngestProgress, IngestResult, IngestSchemaField, IngestStage, IngestStart,
-    IngestTokensUsed,
+    IngestEvent, IngestEvidenceAnchor, IngestFieldEvidence, IngestProgress, IngestResult,
+    IngestSchemaField, IngestStage, IngestStart, IngestTokensUsed,
 };
 pub use knowledge::{
     KnowledgeCompileEvent, KnowledgeCompileOptions, KnowledgeCompileProgress,
     KnowledgeCompileResult, KnowledgeCompileStage, KnowledgeCompileStart,
+};
+pub use knowledge_artifacts::{
+    CompiledKnowledgeView, DossierArtifact, DossierMetadata, DossierRole, DossierScope,
+    EvidenceAnchor, KnowledgeArtifact, KnowledgeHint, TimelineEdge, TimelineEdgeKind, TimelineNode,
+    TimelineNodeKind, TimelineNodeStatus, TimelineView,
 };
 pub use rdf::{PipelineTimings, RdfStage};
 pub use requests::{MirRequest, RdfStart};
