@@ -439,7 +439,7 @@ pub enum WorkerResultQueueMessage {
 pub enum QueueCommandEnvelope {
     Valid {
         receipt_handle: String,
-        command: WorkerCommandMessage,
+        command: Box<WorkerCommandMessage>,
     },
     Malformed {
         receipt_handle: String,
