@@ -18,7 +18,7 @@ serde = { version = "1.0.214", features = ["derive"] }
 serde_json = "1.0.149"
 sqlx = { version = "0.8", optional = true, default-features = false, features = ["derive", "postgres"] }
 uuid = { version = "1.23", features = ["v4", "serde"] }
-utoipa = { version = "5.4.0", features = ["uuid", "chrono"] }
+utoipa = { version = "5.5.0", features = ["uuid", "chrono"] }
 
 [features]
 sqlx = ["dep:sqlx"]
