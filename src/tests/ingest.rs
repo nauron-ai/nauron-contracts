@@ -137,9 +137,7 @@ fn ingest_result_success_carries_evidence_and_knowledge() {
                 "metadata": {
                     "require_conflicts_with": false,
                     "max_conflict_nodes": null
-                },
-                "created_at": "2026-05-13T00:00:00Z",
-                "updated_at": "2026-05-13T00:00:00Z"
+                }
             },
             "compiled_knowledge_view": {
                 "dossier_name": "Agreement",
