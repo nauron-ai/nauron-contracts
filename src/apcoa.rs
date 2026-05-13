@@ -178,6 +178,22 @@ impl WorkerCommandAction {
             Self::RetryAction(_) => WorkerActionType::RetryAction,
         }
     }
+
+    pub fn payload_value(&self) -> Result<Value, serde_json::Error> {
+        match self {
+            Self::IngestContract(value) => serde_json::to_value(value),
+            Self::EvaluateClauses(value) => serde_json::to_value(value),
+            Self::ProcessDocumentOcr(value) => serde_json::to_value(value),
+            Self::FullReprocess(value) => serde_json::to_value(value),
+            Self::RetryAction(value) => serde_json::to_value(value),
+        }
+    }
+}
+
+impl WorkerCommandMessage {
+    pub fn action_type(&self) -> WorkerActionType {
+        self.action.action_type()
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -201,7 +217,9 @@ pub struct FullReprocessCommand {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FullReprocessKind {
+    #[serde(rename = "full_reprocess_document")]
     Document,
+    #[serde(rename = "ocr_prepare_contract_context")]
     OcrPrepareContext,
 }
 
@@ -215,6 +233,7 @@ pub struct RetryActionCommand {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RetryActionKind {
+    #[serde(rename = "ocr_reconcile_pipeline")]
     OcrReconcilePipeline,
 }
 
@@ -233,6 +252,12 @@ impl WorkerResultStatus {
             Self::Completed => "completed",
             Self::Failed => "failed",
         }
+    }
+}
+
+impl std::fmt::Display for WorkerResultStatus {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(self.as_str())
     }
 }
 
@@ -259,6 +284,59 @@ pub struct WorkerResultEventMessage {
     pub error: Option<WorkerResultError>,
 }
 
+impl WorkerResultEventMessage {
+    pub fn in_progress(command: &WorkerCommandMessage, result: WorkerResultAction) -> Self {
+        Self {
+            schema_version: SchemaVersion::default(),
+            event_id: Uuid::new_v4(),
+            command_id: command.command_id,
+            correlation_id: command.correlation_id,
+            occurred_at: Utc::now(),
+            contract_id: command.contract_id,
+            action: result,
+            status: WorkerResultStatus::InProgress,
+            error: None,
+        }
+    }
+
+    pub fn completed(command: &WorkerCommandMessage, result: WorkerResultAction) -> Self {
+        Self {
+            schema_version: SchemaVersion::default(),
+            event_id: Uuid::new_v4(),
+            command_id: command.command_id,
+            correlation_id: command.correlation_id,
+            occurred_at: Utc::now(),
+            contract_id: command.contract_id,
+            action: result,
+            status: WorkerResultStatus::Completed,
+            error: None,
+        }
+    }
+
+    pub fn failed(
+        command: &WorkerCommandMessage,
+        code: &str,
+        message: String,
+        retriable: bool,
+    ) -> Self {
+        Self {
+            schema_version: SchemaVersion::default(),
+            event_id: Uuid::new_v4(),
+            command_id: command.command_id,
+            correlation_id: command.correlation_id,
+            occurred_at: Utc::now(),
+            contract_id: command.contract_id,
+            action: WorkerResultAction::empty_for(command.action_type()),
+            status: WorkerResultStatus::Failed,
+            error: Some(WorkerResultError {
+                code: code.to_string(),
+                message,
+                retriable,
+            }),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "action_type", content = "result", rename_all = "snake_case")]
 pub enum WorkerResultAction {
@@ -277,6 +355,26 @@ impl WorkerResultAction {
             Self::ProcessDocumentOcr(_) => WorkerActionType::ProcessDocumentOcr,
             Self::FullReprocess(_) => WorkerActionType::FullReprocess,
             Self::RetryAction(_) => WorkerActionType::RetryAction,
+        }
+    }
+
+    pub fn empty_for(action_type: WorkerActionType) -> Self {
+        match action_type {
+            WorkerActionType::IngestContract => Self::IngestContract(None),
+            WorkerActionType::EvaluateClauses => Self::EvaluateClauses(None),
+            WorkerActionType::ProcessDocumentOcr => Self::ProcessDocumentOcr(None),
+            WorkerActionType::FullReprocess => Self::FullReprocess(None),
+            WorkerActionType::RetryAction => Self::RetryAction(None),
+        }
+    }
+
+    pub fn result_value(&self) -> Result<Option<Value>, serde_json::Error> {
+        match self {
+            Self::IngestContract(value) => value.as_ref().map(serde_json::to_value).transpose(),
+            Self::EvaluateClauses(value) => value.as_ref().map(serde_json::to_value).transpose(),
+            Self::ProcessDocumentOcr(value) => value.as_ref().map(serde_json::to_value).transpose(),
+            Self::FullReprocess(value) => value.as_ref().map(serde_json::to_value).transpose(),
+            Self::RetryAction(value) => value.as_ref().map(serde_json::to_value).transpose(),
         }
     }
 }
