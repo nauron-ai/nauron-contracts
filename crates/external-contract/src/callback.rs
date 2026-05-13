@@ -2,8 +2,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::conditions::ConditionsEvaluateEvent;
-use crate::{IngestEvent, MirEvent, SchemaVersion};
+use nauron_contracts::conditions::ConditionsEvaluateEvent;
+use nauron_contracts::{IngestEvent, MirEvent, SchemaVersion};
 
 pub const NAURON_CALLBACK_RECEIVED_MESSAGE_TYPE: &str = "nauron_callback_received";
 

@@ -5,8 +5,8 @@ use uuid::Uuid;
 
 use super::callback::NauronCallbackEventMessage;
 use super::command::{FullReprocessKind, RetryActionKind, WorkerActionType, WorkerCommandMessage};
-use crate::conditions::ConditionsEvaluateEvent;
-use crate::{IngestEvent, SchemaVersion};
+use nauron_contracts::conditions::ConditionsEvaluateEvent;
+use nauron_contracts::{IngestEvent, SchemaVersion};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

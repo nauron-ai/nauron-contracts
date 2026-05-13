@@ -3,8 +3,8 @@ use serde_json::Value;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
-use crate::IngestSchemaField;
-use crate::conditions::{ConditionEvaluationOptions, ConditionSpec};
+use nauron_contracts::IngestSchemaField;
+use nauron_contracts::conditions::{ConditionEvaluationOptions, ConditionSpec};
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CallbackTarget {

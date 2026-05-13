@@ -4,7 +4,7 @@ use serde_json::Value;
 use uuid::Uuid;
 
 use super::requests::{CreateConditionsEvaluateJobRequest, CreateIngestJobRequest};
-use crate::SchemaVersion;
+use nauron_contracts::SchemaVersion;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
