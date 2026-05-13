@@ -4,6 +4,7 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
 pub struct KnowledgeArtifact {
     pub dossier: DossierArtifact,
     pub compiled_knowledge_view: CompiledKnowledgeView,
@@ -11,6 +12,7 @@ pub struct KnowledgeArtifact {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
 pub struct DossierArtifact {
     pub id: Uuid,
     pub context_id: i64,

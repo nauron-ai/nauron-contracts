@@ -132,5 +132,17 @@ fn ingest_result_success_carries_evidence_and_knowledge() {
     assert_eq!(*context_id, 42);
     assert_eq!(evidence[0].path, "rent_amount");
     assert_eq!(evidence[0].anchors[0].paragraph_id, "p1");
-    assert!(knowledge.is_some());
+    let knowledge = knowledge.as_ref().unwrap();
+    assert_eq!(knowledge.dossier.name, "Agreement");
+    assert_eq!(knowledge.dossier.revision, 1);
+    assert!(!knowledge.dossier.metadata.require_conflicts_with);
+    assert_eq!(knowledge.compiled_knowledge_view.dossier_name, "Agreement");
+    assert_eq!(knowledge.compiled_knowledge_view.active_surfaces.len(), 1);
+    assert_eq!(
+        knowledge.compiled_knowledge_view.active_surfaces[0].timeline_node_id,
+        "node-1"
+    );
+    assert_eq!(knowledge.timeline_view.nodes.len(), 1);
+    assert_eq!(knowledge.timeline_view.nodes[0].id, "node-1");
+    assert_eq!(knowledge.timeline_view.nodes[0].evidence.len(), 1);
 }
