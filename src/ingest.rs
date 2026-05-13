@@ -2,11 +2,12 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::str::FromStr;
+use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::types::{SchemaVersion, StageParseError};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct IngestSchemaField {
     pub key: String,
     #[serde(default)]

@@ -1,5 +1,6 @@
 //! Shared contracts for Nauron services and workers.
 
+pub mod apcoa;
 pub mod common;
 pub mod conditions;
 pub mod events;
