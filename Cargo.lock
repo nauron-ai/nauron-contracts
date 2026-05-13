@@ -649,6 +649,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "nauron-external-contracts"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "nauron-contracts",
+ "serde",
+ "serde_json",
+ "utoipa",
+ "uuid",
+]
+
+[[package]]
 name = "num-traits"
 version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
