@@ -5,6 +5,7 @@ use std::str::FromStr;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+use crate::knowledge_artifacts::KnowledgeArtifact;
 use crate::types::{SchemaVersion, StageParseError};
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -43,6 +44,21 @@ where
 pub struct IngestTokensUsed {
     pub prompt: Option<u32>,
     pub completion: Option<u32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct IngestEvidenceAnchor {
+    pub doc_id: Uuid,
+    pub paragraph_id: String,
+    pub quote: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct IngestFieldEvidence {
+    pub path: String,
+    pub anchors: Vec<IngestEvidenceAnchor>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -137,6 +153,10 @@ pub enum IngestResult {
         job_id: Uuid,
         context_id: i64,
         data: Value,
+        #[serde(default)]
+        evidence: Vec<IngestFieldEvidence>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        knowledge: Option<Box<KnowledgeArtifact>>,
         language: String,
         #[serde(skip_serializing_if = "Option::is_none")]
         tokens_used: Option<IngestTokensUsed>,
@@ -158,5 +178,5 @@ pub enum IngestResult {
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum IngestEvent {
     Progress(IngestProgress),
-    Result(IngestResult),
+    Result(Box<IngestResult>),
 }

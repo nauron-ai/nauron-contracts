@@ -1,6 +1,6 @@
 use serde_json::json;
 
-use crate::ingest::{IngestSchemaField, IngestStage, IngestStart};
+use crate::ingest::{IngestEvent, IngestResult, IngestSchemaField, IngestStage, IngestStart};
 
 #[test]
 fn ingest_schema_field_accepts_legacy_scalar_type() {
@@ -104,4 +104,105 @@ fn ingest_stage_labels_roundtrip() {
         IngestStage::Persist
     ));
     assert!("unknown".parse::<IngestStage>().is_err());
+}
+
+#[test]
+fn ingest_result_success_carries_evidence_and_knowledge() {
+    let event: IngestEvent = serde_json::from_value(json!({
+        "type": "result",
+        "status": "success",
+        "schema_version": 1,
+        "job_id": "00000000-0000-0000-0000-000000000001",
+        "context_id": 42,
+        "data": {
+            "rent_amount": "100 EUR"
+        },
+        "evidence": [{
+            "path": "rent_amount",
+            "anchors": [{
+                "doc_id": "00000000-0000-0000-0000-000000000002",
+                "paragraph_id": "p1",
+                "quote": "The rent amount is 100 EUR.",
+                "explanation": "source quote"
+            }]
+        }],
+        "knowledge": {
+            "dossier": {
+                "id": "00000000-0000-0000-0000-000000000003",
+                "context_id": 42,
+                "name": "Agreement",
+                "role": "runtime_knowledge_compiler",
+                "scope": "context",
+                "revision": 1,
+                "metadata": {
+                    "require_conflicts_with": false,
+                    "max_conflict_nodes": null
+                },
+                "created_at": "2026-05-13T00:00:00Z",
+                "updated_at": "2026-05-13T00:00:00Z"
+            },
+            "compiled_knowledge_view": {
+                "dossier_name": "Agreement",
+                "brief": "Agreement brief",
+                "active_surfaces": [{
+                    "label": "Rent",
+                    "summary": "The rent amount is 100 EUR.",
+                    "evidence": [{
+                        "doc_id": "00000000-0000-0000-0000-000000000002",
+                        "paragraph_id": "p1",
+                        "quote": "The rent amount is 100 EUR."
+                    }],
+                    "timeline_node_id": "node-1"
+                }],
+                "temporal_hints": [],
+                "conflict_hints": [],
+                "retrieval_hints": []
+            },
+            "timeline_view": {
+                "nodes": [{
+                    "id": "node-1",
+                    "kind": "document",
+                    "status": "active",
+                    "effective_from": "2024-01-01",
+                    "effective_to": null,
+                    "evidence": [{
+                        "doc_id": "00000000-0000-0000-0000-000000000002",
+                        "paragraph_id": "p1",
+                        "quote": "The rent amount is 100 EUR."
+                    }],
+                    "label": "Agreement",
+                    "summary": "The rent amount is 100 EUR."
+                }],
+                "edges": []
+            }
+        },
+        "language": "en",
+        "tokens_used": {
+            "prompt": 10,
+            "completion": 5
+        },
+        "completed_at": "2026-05-13T00:00:00Z"
+    }))
+    .unwrap();
+
+    let result = match event {
+        IngestEvent::Result(result) => Some(result),
+        IngestEvent::Progress(_) => None,
+    }
+    .unwrap();
+    let (context_id, evidence, knowledge) = match result.as_ref() {
+        IngestResult::Success {
+            context_id,
+            evidence,
+            knowledge,
+            ..
+        } => Some((context_id, evidence, knowledge)),
+        IngestResult::Failure { .. } => None,
+    }
+    .unwrap();
+
+    assert_eq!(*context_id, 42);
+    assert_eq!(evidence[0].path, "rent_amount");
+    assert_eq!(evidence[0].anchors[0].paragraph_id, "p1");
+    assert!(knowledge.is_some());
 }
