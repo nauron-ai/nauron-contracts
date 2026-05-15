@@ -74,8 +74,12 @@ pub struct PipelineTimings {
     /// Duration of language detection in milliseconds.
     #[serde(default)]
     pub language_ms: f64,
+    #[serde(default)]
+    pub doc_signals_ms: f64,
     /// Duration of the information extraction stage in milliseconds.
     pub ie_ms: f64,
+    #[serde(default)]
+    pub label_enrichment_ms: f64,
     /// Duration of the SHACL validation stage in milliseconds.
     pub shacl_ms: f64,
     /// Duration of the reasoning stage in milliseconds.
@@ -85,4 +89,8 @@ pub struct PipelineTimings {
     pub shacl_af_ms: f64,
     /// Duration of the SPARQL persistence stage in milliseconds.
     pub sparql_ms: f64,
+    #[serde(default)]
+    pub embedding_ms: f64,
+    #[serde(default)]
+    pub qdrant_ms: f64,
 }
