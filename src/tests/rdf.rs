@@ -71,11 +71,15 @@ fn rdf_result_success_roundtrip() {
             fetch_ms: 12.0,
             segment_ms: 8.5,
             language_ms: 3.0,
+            doc_signals_ms: 4.0,
             ie_ms: 42.1,
+            label_enrichment_ms: 5.0,
             shacl_ms: 6.0,
             reasoning_ms: 11.2,
             shacl_af_ms: 2.5,
             sparql_ms: 9.8,
+            embedding_ms: 7.0,
+            qdrant_ms: 8.0,
         },
         stats: None,
     });
@@ -95,8 +99,13 @@ fn rdf_result_success_roundtrip() {
             assert_eq!(doc_id, parse_uuid("ffffffff-ffff-ffff-ffff-ffffffffffff"));
             assert_eq!(context_id, 5);
             assert!((timings.language_ms - 3.0).abs() < f64::EPSILON);
+            assert!((timings.doc_signals_ms - 4.0).abs() < f64::EPSILON);
             assert!((timings.ie_ms - 42.1).abs() < f64::EPSILON);
+            assert!((timings.label_enrichment_ms - 5.0).abs() < f64::EPSILON);
             assert!((timings.shacl_af_ms - 2.5).abs() < f64::EPSILON);
+            assert!((timings.sparql_ms - 9.8).abs() < f64::EPSILON);
+            assert!((timings.embedding_ms - 7.0).abs() < f64::EPSILON);
+            assert!((timings.qdrant_ms - 8.0).abs() < f64::EPSILON);
         }
         _ => panic!("unexpected variant"),
     }
