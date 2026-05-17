@@ -155,6 +155,10 @@ pub enum RdfResult {
         job_id: Uuid,
         doc_id: Uuid,
         context_id: i64,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        requested_at: Option<DateTime<Utc>>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        received_at: Option<DateTime<Utc>>,
         completed_at: DateTime<Utc>,
         timings: PipelineTimings,
         #[serde(skip_serializing_if = "Option::is_none")]

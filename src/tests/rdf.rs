@@ -66,6 +66,8 @@ fn rdf_result_success_roundtrip() {
         job_id,
         doc_id,
         context_id: 5,
+        requested_at: Some(Utc::now()),
+        received_at: Some(Utc::now()),
         completed_at: Utc::now(),
         timings: PipelineTimings {
             fetch_ms: 12.0,
@@ -92,12 +94,16 @@ fn rdf_result_success_roundtrip() {
             job_id,
             doc_id,
             context_id,
+            requested_at,
+            received_at,
             timings,
             ..
         }) => {
             assert_eq!(job_id, parse_uuid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"));
             assert_eq!(doc_id, parse_uuid("ffffffff-ffff-ffff-ffff-ffffffffffff"));
             assert_eq!(context_id, 5);
+            assert!(requested_at.is_some());
+            assert!(received_at.is_some());
             assert!((timings.language_ms - 3.0).abs() < f64::EPSILON);
             assert!((timings.doc_signals_ms - 4.0).abs() < f64::EPSILON);
             assert!((timings.ie_ms - 42.1).abs() < f64::EPSILON);
