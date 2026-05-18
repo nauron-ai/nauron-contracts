@@ -68,6 +68,7 @@ pub struct TimelineNode {
 pub enum TimelineNodeKind {
     Document,
     Change,
+    UnresolvedChange,
     Conflict,
     Reference,
 }
