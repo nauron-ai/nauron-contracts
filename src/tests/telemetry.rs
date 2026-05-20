@@ -35,7 +35,10 @@ fn step_telemetry_roundtrip() {
     let encoded = serde_json::to_string(&payload).unwrap();
     let encoded_json: serde_json::Value = serde_json::from_str(&encoded).unwrap();
     assert_eq!(encoded_json["type"], json!("step"));
-    assert!(encoded_json["file_id"].is_null());
+    assert!(
+        encoded_json.get("file_id").is_none(),
+        "file_id should be omitted from telemetry payload"
+    );
 
     let decoded: JobTelemetryEvent = serde_json::from_str(&encoded).unwrap();
 
