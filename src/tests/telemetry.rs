@@ -13,7 +13,6 @@ fn step_telemetry_roundtrip() {
         job_id: Uuid::nil(),
         pipeline_id: Some(Uuid::nil()),
         context_id: 42,
-        file_id: Some(7),
         document_id: Some(Uuid::nil()),
         component: JobStepComponent::Rdf,
         step: "ner".to_string(),
@@ -34,6 +33,10 @@ fn step_telemetry_roundtrip() {
     });
 
     let encoded = serde_json::to_string(&payload).unwrap();
+    let encoded_json: serde_json::Value = serde_json::from_str(&encoded).unwrap();
+    assert_eq!(encoded_json["type"], json!("step"));
+    assert!(encoded_json["file_id"].is_null());
+
     let decoded: JobTelemetryEvent = serde_json::from_str(&encoded).unwrap();
 
     match decoded {
@@ -44,4 +47,12 @@ fn step_telemetry_roundtrip() {
             assert_eq!(step.metrics["segments"], json!(120));
         }
     }
+
+    let capped = JobStepTelemetry {
+        percent: Some(255),
+        ..match payload {
+            JobTelemetryEvent::Step(step) => step,
+        }
+    };
+    assert_eq!(capped.normalized_percent(), Some(100));
 }

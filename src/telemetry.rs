@@ -6,6 +6,8 @@ use serde_json::Value;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+const MAX_PERCENT: u8 = 100;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[serde(rename_all = "snake_case")]
@@ -102,8 +104,6 @@ pub struct JobStepTelemetry {
     pub pipeline_id: Option<Uuid>,
     pub context_id: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub file_id: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub document_id: Option<Uuid>,
     pub component: JobStepComponent,
     pub step: String,
@@ -144,6 +144,6 @@ pub enum JobTelemetryEvent {
 
 impl JobStepTelemetry {
     pub fn normalized_percent(&self) -> Option<u8> {
-        self.percent.map(|value| value.min(100))
+        self.percent.map(|value| value.min(MAX_PERCENT))
     }
 }
