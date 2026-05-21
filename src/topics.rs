@@ -21,6 +21,7 @@ pub const CONDITIONS_EVALUATE_RESULT_TOPIC: &str = "conditions.evaluate.result";
 pub const KNOWLEDGE_COMPILE_START_TOPIC: &str = "knowledge.compile.start";
 pub const KNOWLEDGE_COMPILE_PROGRESS_TOPIC: &str = "knowledge.compile.progress";
 pub const KNOWLEDGE_COMPILE_RESULT_TOPIC: &str = "knowledge.compile.result";
+pub const TELEMETRY_TOPIC: &str = "job.telemetry";
 /// Topic emitted whenever ontologies are refreshed.
 pub const ONTOLOGY_UPDATED_TOPIC: &str = "ontology.updated";
 /// Topic requesting a context-level reprocessing cycle.
