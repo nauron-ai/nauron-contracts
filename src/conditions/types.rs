@@ -130,7 +130,7 @@ pub struct ConditionEvaluationResponse {
 pub enum ConditionEvaluationErrorCode {
     ValidationError,
     ContextNotFound,
-    VectorApiError,
+    RdfApiError,
     LlmError,
     InternalError,
 }
