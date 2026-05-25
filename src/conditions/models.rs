@@ -114,15 +114,7 @@ pub struct ConditionEvaluationResponse {
     pub results: Vec<ConditionEvaluationResult>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
-#[serde(rename_all = "snake_case")]
-pub enum ConditionEvaluationErrorCode {
-    ValidationError,
-    ContextNotFound,
-    VectorApiError,
-    LlmError,
-    InternalError,
-}
+pub use super::types::ConditionEvaluationErrorCode;
 
 #[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub struct ConditionErrorPayload {

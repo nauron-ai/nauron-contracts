@@ -130,7 +130,8 @@ pub struct ConditionEvaluationResponse {
 pub enum ConditionEvaluationErrorCode {
     ValidationError,
     ContextNotFound,
-    VectorApiError,
+    #[serde(alias = "vector_api_error")]
+    RdfApiError,
     LlmError,
     InternalError,
 }
