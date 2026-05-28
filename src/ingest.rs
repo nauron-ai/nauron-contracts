@@ -58,6 +58,8 @@ pub struct IngestEvidenceAnchor {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct IngestFieldEvidence {
     pub path: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reasoning: Option<String>,
     pub anchors: Vec<IngestEvidenceAnchor>,
 }
 
