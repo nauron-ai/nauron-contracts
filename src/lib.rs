@@ -3,6 +3,7 @@
 pub mod common;
 pub mod conditions;
 pub mod events;
+pub mod golden_sets;
 pub mod health;
 pub mod ingest;
 pub mod knowledge;
@@ -17,6 +18,12 @@ pub mod vector;
 pub use events::{
     MirEvent, MirProgress, MirResult, MirStats, RdfEvent, RdfProgress, RdfRelationStats, RdfResult,
     RdfStats, RelationMissingReason, RelationMissingStat,
+};
+pub use golden_sets::{
+    ActivateGoldenSetPromptCandidateRequest, EvaluateGoldenSetPromptCandidateRequest,
+    GenerateGoldenSetPromptCandidateRequest, GoldenSetPromptActivation, GoldenSetPromptCandidate,
+    GoldenSetPromptEvaluation, GoldenSetPromptEvaluationStatus, GoldenSetPromptHistory,
+    GoldenSetPromptScope,
 };
 pub use ingest::{
     IngestEvent, IngestEvidenceAnchor, IngestFieldEvidence, IngestProgress, IngestResult,
