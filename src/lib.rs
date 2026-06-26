@@ -21,9 +21,11 @@ pub use events::{
 };
 pub use golden_sets::{
     ActivateGoldenSetPromptCandidateRequest, EvaluateGoldenSetPromptCandidateRequest,
-    GenerateGoldenSetPromptCandidateRequest, GoldenSetPromptActivation, GoldenSetPromptCandidate,
-    GoldenSetPromptEvaluation, GoldenSetPromptEvaluationStatus, GoldenSetPromptHistory,
-    GoldenSetPromptScope,
+    GenerateGoldenSetPromptCandidateRequest, GoldenSetAutotuningReadiness,
+    GoldenSetAutotuningResult, GoldenSetAutotuningRun, GoldenSetAutotuningRunStatus,
+    GoldenSetPromptActivation, GoldenSetPromptCandidate, GoldenSetPromptEvaluation,
+    GoldenSetPromptEvaluationStatus, GoldenSetPromptHistory, GoldenSetPromptScope,
+    TriggerGoldenSetAutotuningRequest,
 };
 pub use ingest::{
     IngestEvent, IngestEvidenceAnchor, IngestFieldEvidence, IngestProgress, IngestResult,
