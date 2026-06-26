@@ -98,3 +98,52 @@ pub struct GoldenSetPromptHistory {
     pub evaluations: Vec<GoldenSetPromptEvaluation>,
     pub activations: Vec<GoldenSetPromptActivation>,
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GoldenSetAutotuningRunStatus {
+    NotStarted,
+    Queued,
+    Running,
+    Completed,
+    Failed,
+    Cancelled,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TriggerGoldenSetAutotuningRequest {
+    pub golden_set_id: String,
+    pub idempotency_key: String,
+    pub actor: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GoldenSetAutotuningReadiness {
+    pub golden_set_id: String,
+    pub allowed: bool,
+    pub blocked_reasons: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GoldenSetAutotuningResult {
+    pub metrics: Value,
+    pub prompt_candidate_refs: Vec<String>,
+    pub affected_datapoints: Vec<String>,
+    pub source_golden_set_version_refs: Vec<String>,
+    pub output_artifact_refs: Vec<String>,
+    pub error_code: Option<String>,
+    pub error_message: Option<String>,
+    pub retry_eligible: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GoldenSetAutotuningRun {
+    pub id: String,
+    pub golden_set_id: String,
+    pub status: GoldenSetAutotuningRunStatus,
+    pub actor: Option<String>,
+    pub started_at: Option<DateTime<Utc>>,
+    pub completed_at: Option<DateTime<Utc>>,
+    pub result: Option<GoldenSetAutotuningResult>,
+    pub idempotency_key: String,
+}
