@@ -1,6 +1,8 @@
 use serde_json::json;
 
-use crate::ingest::{IngestEvent, IngestResult, IngestSchemaField, IngestStage, IngestStart};
+use crate::ingest::{
+    IngestEvent, IngestFieldTokensUsed, IngestResult, IngestSchemaField, IngestStage, IngestStart,
+};
 
 #[test]
 fn ingest_schema_field_accepts_legacy_scalar_type() {
@@ -118,18 +120,20 @@ fn ingest_result_success_carries_evidence_and_knowledge() {
         IngestEvent::Progress(_) => None,
     }
     .unwrap();
-    let (context_id, evidence, knowledge) = match result.as_ref() {
+    let (context_id, evidence, knowledge, field_tokens_used) = match result.as_ref() {
         IngestResult::Success {
             context_id,
             evidence,
             knowledge,
+            field_tokens_used,
             ..
-        } => Some((context_id, evidence, knowledge)),
+        } => Some((context_id, evidence, knowledge, field_tokens_used)),
         IngestResult::Failure { .. } => None,
     }
     .unwrap();
 
     assert_eq!(*context_id, 42);
+    assert!(field_tokens_used.is_empty());
     assert_eq!(evidence[0].path, "rent_amount");
     assert_eq!(evidence[0].anchors[0].paragraph_id, "p1");
     let knowledge = knowledge.as_ref().unwrap();
@@ -145,4 +149,62 @@ fn ingest_result_success_carries_evidence_and_knowledge() {
     assert_eq!(knowledge.timeline_view.nodes.len(), 1);
     assert_eq!(knowledge.timeline_view.nodes[0].id, "node-1");
     assert_eq!(knowledge.timeline_view.nodes[0].evidence.len(), 1);
+}
+
+#[test]
+fn ingest_field_token_usage_accepts_null_usage() {
+    let usage: IngestFieldTokensUsed = serde_json::from_value(json!({
+        "path": "rent_amount",
+        "tokens_used": null
+    }))
+    .unwrap();
+
+    assert_eq!(usage.path, "rent_amount");
+    assert!(usage.tokens_used.is_none());
+}
+
+#[test]
+fn ingest_result_carries_exact_single_field_token_usage() {
+    let event: IngestEvent = serde_json::from_value(json!({
+        "type": "result",
+        "status": "success",
+        "job_id": "00000000-0000-0000-0000-000000000001",
+        "context_id": 42,
+        "data": { "rent_amount": 1200 },
+        "evidence": [],
+        "language": "en",
+        "tokens_used": { "prompt": 100, "completion": 20 },
+        "field_tokens_used": [{
+            "path": "rent_amount",
+            "tokens_used": { "prompt": 100, "completion": 20 }
+        }],
+        "completed_at": "2026-07-13T10:00:00Z"
+    }))
+    .unwrap();
+
+    let IngestEvent::Result(result) = event else {
+        panic!("expected result event");
+    };
+    let IngestResult::Success {
+        field_tokens_used, ..
+    } = result.as_ref()
+    else {
+        panic!("expected success result");
+    };
+    assert_eq!(field_tokens_used.len(), 1);
+    assert_eq!(field_tokens_used[0].path, "rent_amount");
+    assert_eq!(
+        field_tokens_used[0]
+            .tokens_used
+            .as_ref()
+            .and_then(|usage| usage.prompt),
+        Some(100)
+    );
+    assert_eq!(
+        field_tokens_used[0]
+            .tokens_used
+            .as_ref()
+            .and_then(|usage| usage.completion),
+        Some(20)
+    );
 }

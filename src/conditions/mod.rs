@@ -11,7 +11,8 @@ pub use types::{
     ConditionContextMode, ConditionErrorPayload, ConditionErrorResponse,
     ConditionEvaluationErrorCode, ConditionEvaluationOptions, ConditionEvaluationRequest,
     ConditionEvaluationResponse, ConditionEvaluationResult, ConditionMatch, ConditionParameters,
-    ConditionRawEvidence, ConditionSpec, ConditionVerdict, RiskLevel, SeverityLevel,
+    ConditionRawEvidence, ConditionSpec, ConditionTokensUsed, ConditionVerdict, RiskLevel,
+    SeverityLevel,
 };
 pub use validation::{
     ConditionEvaluationOptionsResolved, ConditionLimits, ConditionValidationError, validate_request,

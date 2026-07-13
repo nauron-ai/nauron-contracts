@@ -101,6 +101,12 @@ pub struct ConditionRawEvidence {
     pub rdf_relations: Option<u32>,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema, PartialEq, Eq)]
+pub struct ConditionTokensUsed {
+    pub prompt: Option<u32>,
+    pub completion: Option<u32>,
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub struct ConditionEvaluationResult {
     pub condition_id: String,
@@ -117,6 +123,8 @@ pub struct ConditionEvaluationResult {
     pub reasoning: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub raw_evidence: Option<ConditionRawEvidence>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tokens_used: Option<ConditionTokensUsed>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]

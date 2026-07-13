@@ -46,6 +46,13 @@ pub struct IngestTokensUsed {
     pub completion: Option<u32>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct IngestFieldTokensUsed {
+    pub path: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tokens_used: Option<IngestTokensUsed>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct IngestEvidenceAnchor {
     pub doc_id: Uuid,
@@ -162,6 +169,8 @@ pub enum IngestResult {
         language: String,
         #[serde(skip_serializing_if = "Option::is_none")]
         tokens_used: Option<IngestTokensUsed>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        field_tokens_used: Vec<IngestFieldTokensUsed>,
         completed_at: DateTime<Utc>,
     },
     Failure {
