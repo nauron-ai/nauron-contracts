@@ -28,8 +28,8 @@ pub use golden_sets::{
     TriggerGoldenSetAutotuningRequest,
 };
 pub use ingest::{
-    IngestEvent, IngestEvidenceAnchor, IngestFieldEvidence, IngestProgress, IngestResult,
-    IngestSchemaField, IngestStage, IngestStart, IngestTokensUsed,
+    IngestEvent, IngestEvidenceAnchor, IngestFieldEvidence, IngestFieldTokensUsed, IngestProgress,
+    IngestResult, IngestSchemaField, IngestStage, IngestStart, IngestTokensUsed,
 };
 pub use knowledge::{
     KnowledgeCompileEvent, KnowledgeCompileOptions, KnowledgeCompileProgress,
