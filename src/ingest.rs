@@ -62,11 +62,25 @@ pub struct IngestEvidenceAnchor {
     pub explanation: Option<String>,
 }
 
+#[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum IngestEvidenceSupportStatus {
+    Supported,
+    PartiallySupported,
+    NotFound,
+    #[default]
+    Unassessed,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct IngestFieldEvidence {
     pub path: String,
+    #[serde(default)]
+    pub support_status: IngestEvidenceSupportStatus,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reasoning: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub evidence_gap: Option<String>,
     pub anchors: Vec<IngestEvidenceAnchor>,
 }
 
