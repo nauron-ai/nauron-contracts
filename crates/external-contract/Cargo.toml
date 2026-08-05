@@ -2,15 +2,15 @@
 name = "nauron-external-contracts"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.95"
+rust-version = "1.97"
 description = "External contract DTOs for Nauron integrations"
-repository = "https://codeberg.org/nauron-ai/nauron-contracts"
+repository = "https://github.com/nauron-ai/nauron-contracts"
 license = "Apache-2.0"
 
 [dependencies]
 chrono = { version = "0.4.45", default-features = false, features = ["std", "serde", "clock"] }
 nauron-contracts = { path = "../.." }
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.150"
-uuid = { version = "1.23.3", features = ["v4", "serde"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+uuid = { version = "1.24.0", features = ["v4", "serde"] }
 utoipa = { version = "5.5.0", features = ["uuid", "chrono"] }

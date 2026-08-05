@@ -38,7 +38,7 @@ nauron-contracts = { version = "0.1.0", features = ["sqlx"] }
 
 ## Requirements
 
-- Rust `1.95.0`
+- Rust `1.97.1`
 - Cargo
 
 ## Versioning
@@ -84,8 +84,8 @@ let payload = serde_json::to_vec(&request)?;
 ## Development
 
 ```bash
-cargo +1.95.0 fmt --check
+cargo +1.97.1 fmt --check
 python3 scripts/loc_check.py 250 rs
-cargo +1.95.0 clippy --workspace --all-targets --all-features -- -D warnings
-cargo +1.95.0 test --workspace --all-targets --all-features
+cargo +1.97.1 clippy --workspace --all-targets --all-features -- -D warnings
+cargo +1.97.1 test --workspace --all-targets --all-features
 ```
