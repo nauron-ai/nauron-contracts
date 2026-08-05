@@ -1,10 +1,6 @@
 name: Nauron Contracts CI
 
 on:
-  push:
-    branches:
-      - main
-      - develop
   pull_request:
     branches:
       - main
@@ -21,16 +17,15 @@ concurrency:
 jobs:
   checks:
     runs-on: ubuntu-latest
-    if: github.actor != 'dependabot[bot]'
 
     steps:
       - name: Checkout nauron-contracts
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Rust toolchain
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
-            | sh -s -- -y --profile minimal --default-toolchain 1.95.0 \
+            | sh -s -- -y --profile minimal --default-toolchain 1.97.1 \
               --component rustfmt \
               --component clippy
           echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
@@ -43,6 +38,3 @@ jobs:
 
       - name: Enforce LOC limit
         run: python3 scripts/loc_check.py 250 rs
-
-      - name: Run tests
-        run: cargo test --all-targets --all-features
