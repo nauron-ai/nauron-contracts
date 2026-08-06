@@ -8,6 +8,7 @@ pub mod health;
 pub mod ingest;
 pub mod knowledge;
 pub mod knowledge_artifacts;
+pub mod prompt_runtime;
 pub mod rdf;
 pub mod requests;
 pub mod telemetry;
@@ -40,6 +41,12 @@ pub use knowledge_artifacts::{
     CompiledKnowledgeView, DossierArtifact, DossierMetadata, DossierRole, DossierScope,
     EvidenceAnchor, KnowledgeArtifact, KnowledgeHint, TimelineEdge, TimelineEdgeKind, TimelineNode,
     TimelineNodeKind, TimelineNodeStatus, TimelineView,
+};
+pub use prompt_runtime::{
+    CompositePromptManifestV2, INFERENCER_COMPONENT_PREFIX, PROMPT_RUNTIME_MANIFEST_VERSION,
+    PromptActivationCondition, PromptRuntimeBundle, PromptRuntimeComponent, PromptRuntimeError,
+    PromptRuntimeRole, PromptRuntimeStage, TargetPromptBinding, calculate_composite_hash,
+    calculate_runtime_hash, sha256_hex,
 };
 pub use rdf::{PipelineTimings, RdfStage};
 pub use requests::{MirRequest, RdfStart};
