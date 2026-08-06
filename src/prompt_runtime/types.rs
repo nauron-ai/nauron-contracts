@@ -116,7 +116,6 @@ pub struct TargetPromptBinding {
     pub prompt_version_id: Uuid,
     pub prompt_version: i32,
     pub prompt_hash: String,
-    pub source_bundle_hash: Option<String>,
 }
 
 impl TargetPromptBinding {
@@ -124,13 +123,11 @@ impl TargetPromptBinding {
         prompt_version_id: Uuid,
         prompt_version: i32,
         prompt_hash: impl Into<String>,
-        source_bundle_hash: Option<String>,
     ) -> Result<Self, PromptRuntimeError> {
         let binding = Self {
             prompt_version_id,
             prompt_version,
             prompt_hash: prompt_hash.into(),
-            source_bundle_hash,
         };
         binding.validate()?;
         Ok(binding)
@@ -140,14 +137,8 @@ impl TargetPromptBinding {
         prompt_version_id: Uuid,
         prompt_version: i32,
         content: impl AsRef<[u8]>,
-        source_bundle_hash: Option<String>,
     ) -> Result<Self, PromptRuntimeError> {
-        Self::new(
-            prompt_version_id,
-            prompt_version,
-            sha256_hex(content),
-            source_bundle_hash,
-        )
+        Self::new(prompt_version_id, prompt_version, sha256_hex(content))
     }
 
     pub fn validate(&self) -> Result<(), PromptRuntimeError> {
@@ -158,9 +149,6 @@ impl TargetPromptBinding {
             return Err(PromptRuntimeError::InvalidPromptVersion);
         }
         validate_hash(&self.prompt_hash, "prompt_hash")?;
-        if let Some(hash) = &self.source_bundle_hash {
-            validate_hash(hash, "source_bundle_hash")?;
-        }
         Ok(())
     }
 }

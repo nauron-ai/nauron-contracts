@@ -10,18 +10,27 @@ const PROMPT_VERSION_ID: Uuid = Uuid::from_u128(0x222222222222222222222222222222
 const SYSTEM_COMPONENT_ID: &str = "inferencer.ingest.system";
 const USER_COMPONENT_ID: &str = "inferencer.ingest.user";
 const TARGET_KEY: &str = "revenue";
+const COSTS_KEY: &str = "costs";
+const TARGET_CONTENT: &str = "target";
 const SYSTEM_CONTENT: &str = "system";
+const VALID_VERSION: i32 = 1;
+const INVALID_VERSION: i32 = 0;
+const INVALID_MANIFEST_V: u16 = 0;
+const CANONICAL_VERSION: i32 = 7;
+const HASH_LENGTH: usize = 64;
+const INVALID_HASH_CHAR: &str = "A";
+const ZERO_HASH_CHAR: &str = "0";
+const INVALID_TARGET: &str = " revenue";
 const EXPECTED_RUNTIME_HASH: &str =
     "29059d0a03b3e930868486e71a02674a5f612784ed5839f3eba012eb0b0dd392";
 const EXPECTED_COMPOSITE_HASH: &str =
-    "585ed533951d0e7ac80083953b1b885cc4fd1346e96046583d3d8725864b9cb6";
+    "479ad5dda25bc48fd1c25f9be4d3ce5a15f2cbb665f4be190b77537cb924d07a";
 
 #[test]
 fn target_change_preserves_runtime_hash() {
     let runtime = runtime_bundle(vec![component(SYSTEM_COMPONENT_ID, 10, SYSTEM_CONTENT)]);
     let first = manifest(runtime.clone(), targets(&[(TARGET_KEY, "first")]));
     let second = manifest(runtime, targets(&[(TARGET_KEY, "second")]));
-
     assert_eq!(
         first.runtime_bundle.runtime_hash,
         second.runtime_bundle.runtime_hash
@@ -31,7 +40,7 @@ fn target_change_preserves_runtime_hash() {
 
 #[test]
 fn global_change_preserves_target_hash() {
-    let binding = target_binding("target");
+    let binding = target_binding(TARGET_CONTENT);
     let first = manifest(
         runtime_bundle(vec![component(SYSTEM_COMPONENT_ID, 10, "first")]),
         BTreeMap::from([(TARGET_KEY.to_string(), binding.clone())]),
@@ -40,7 +49,6 @@ fn global_change_preserves_target_hash() {
         runtime_bundle(vec![component(SYSTEM_COMPONENT_ID, 10, "second")]),
         BTreeMap::from([(TARGET_KEY.to_string(), binding)]),
     );
-
     assert_eq!(
         first.targets[TARGET_KEY].prompt_hash,
         second.targets[TARGET_KEY].prompt_hash
@@ -64,14 +72,12 @@ fn component_and_target_order_is_deterministic() {
     ]);
     let mut first_targets = BTreeMap::new();
     first_targets.insert(TARGET_KEY.to_string(), target_binding(TARGET_KEY));
-    first_targets.insert("costs".to_string(), target_binding("costs"));
+    first_targets.insert(COSTS_KEY.to_string(), target_binding(COSTS_KEY));
     let mut second_targets = BTreeMap::new();
-    second_targets.insert("costs".to_string(), target_binding("costs"));
+    second_targets.insert(COSTS_KEY.to_string(), target_binding(COSTS_KEY));
     second_targets.insert(TARGET_KEY.to_string(), target_binding(TARGET_KEY));
-
     let first = manifest(first_runtime, first_targets);
     let second = manifest(second_runtime, second_targets);
-
     assert_eq!(
         first.runtime_bundle.runtime_hash,
         second.runtime_bundle.runtime_hash
@@ -82,20 +88,17 @@ fn component_and_target_order_is_deterministic() {
 #[test]
 fn malformed_hashes_are_rejected() {
     let mut runtime = runtime_bundle(vec![component(SYSTEM_COMPONENT_ID, 10, SYSTEM_CONTENT)]);
-    runtime.runtime_hash = "ABC".repeat(21) + "A";
+    runtime.runtime_hash = INVALID_HASH_CHAR.repeat(HASH_LENGTH);
     assert_eq!(
         runtime.validate(),
         Err(PromptRuntimeError::InvalidHash("runtime_hash"))
     );
-
-    let binding = TargetPromptBinding::new(Uuid::new_v4(), 1, "0".repeat(64), Some("A".repeat(64)));
-    assert_eq!(
-        binding,
-        Err(PromptRuntimeError::InvalidHash("source_bundle_hash"))
-    );
+    let invalid_hash = INVALID_HASH_CHAR.repeat(HASH_LENGTH);
+    let binding = TargetPromptBinding::new(Uuid::new_v4(), VALID_VERSION, invalid_hash);
+    assert_eq!(binding, Err(PromptRuntimeError::InvalidHash("prompt_hash")));
 
     let mut component = component(SYSTEM_COMPONENT_ID, 10, SYSTEM_CONTENT);
-    component.content_hash = "0".repeat(64);
+    component.content_hash = ZERO_HASH_CHAR.repeat(HASH_LENGTH);
     assert!(matches!(
         component.validate(),
         Err(PromptRuntimeError::ComponentContentHashMismatch(_))
@@ -106,7 +109,6 @@ fn malformed_hashes_are_rejected() {
 fn duplicate_components_are_rejected() {
     let duplicate = component(SYSTEM_COMPONENT_ID, 10, SYSTEM_CONTENT);
     let result = PromptRuntimeBundle::new(Uuid::new_v4(), 1, vec![duplicate.clone(), duplicate]);
-
     assert_eq!(
         result,
         Err(PromptRuntimeError::DuplicateComponentId(
@@ -123,7 +125,7 @@ fn non_inferencer_components_are_rejected() {
         PromptRuntimeRole::User,
         PromptActivationCondition::Always,
         10,
-        "target",
+        TARGET_CONTENT,
     );
 
     assert_eq!(
@@ -146,11 +148,11 @@ fn invalid_identity_versions_targets_and_composite_are_rejected() {
         Err(PromptRuntimeError::InvalidRuntimeBundleVersion)
     );
     assert_eq!(
-        TargetPromptBinding::from_content(Uuid::nil(), 1, "target", None),
+        TargetPromptBinding::from_content(Uuid::nil(), VALID_VERSION, TARGET_CONTENT),
         Err(PromptRuntimeError::NilPromptVersionId)
     );
     assert_eq!(
-        TargetPromptBinding::from_content(PROMPT_VERSION_ID, 0, "target", None),
+        TargetPromptBinding::from_content(PROMPT_VERSION_ID, INVALID_VERSION, TARGET_CONTENT),
         Err(PromptRuntimeError::InvalidPromptVersion)
     );
 
@@ -158,19 +160,23 @@ fn invalid_identity_versions_targets_and_composite_are_rejected() {
     assert_eq!(
         CompositePromptManifestV2::new(
             runtime.clone(),
-            BTreeMap::from([(" revenue".to_string(), target_binding("target"))]),
+            BTreeMap::from([(INVALID_TARGET.to_string(), target_binding(TARGET_CONTENT))]),
         ),
-        Err(PromptRuntimeError::InvalidTargetKey(" revenue".to_string()))
+        Err(PromptRuntimeError::InvalidTargetKey(
+            INVALID_TARGET.to_string()
+        ))
     );
 
-    let mut manifest = manifest(runtime, targets(&[("revenue", "target")]));
-    manifest.manifest_version = 0;
+    let mut manifest = manifest(runtime, targets(&[(TARGET_KEY, TARGET_CONTENT)]));
+    manifest.manifest_version = INVALID_MANIFEST_V;
     assert_eq!(
         manifest.validate(),
-        Err(PromptRuntimeError::InvalidManifestVersion(0))
+        Err(PromptRuntimeError::InvalidManifestVersion(
+            INVALID_MANIFEST_V
+        ))
     );
     manifest.manifest_version = PROMPT_RUNTIME_MANIFEST_VERSION;
-    manifest.composite_hash = "0".repeat(64);
+    manifest.composite_hash = ZERO_HASH_CHAR.repeat(HASH_LENGTH);
     assert_eq!(
         manifest.validate(),
         Err(PromptRuntimeError::CompositeHashMismatch)
@@ -181,7 +187,7 @@ fn invalid_identity_versions_targets_and_composite_are_rejected() {
 fn canonical_hash_vectors_are_stable() {
     let runtime = runtime_bundle(vec![component(SYSTEM_COMPONENT_ID, 10, SYSTEM_CONTENT)]);
     let binding =
-        TargetPromptBinding::from_content(PROMPT_VERSION_ID, 7, "target", Some("a".repeat(64)))
+        TargetPromptBinding::from_content(PROMPT_VERSION_ID, CANONICAL_VERSION, TARGET_CONTENT)
             .expect("valid target binding");
     let manifest = manifest(runtime, BTreeMap::from([(TARGET_KEY.to_string(), binding)]));
 
@@ -193,8 +199,8 @@ fn canonical_hash_vectors_are_stable() {
 fn unknown_contract_fields_are_rejected_at_every_level() {
     let component = component(SYSTEM_COMPONENT_ID, 10, SYSTEM_CONTENT);
     let runtime = runtime_bundle(vec![component.clone()]);
-    let binding = target_binding("target");
-    let manifest = manifest(runtime.clone(), targets(&[(TARGET_KEY, "target")]));
+    let binding = target_binding(TARGET_CONTENT);
+    let manifest = manifest(runtime.clone(), targets(&[(TARGET_KEY, TARGET_CONTENT)]));
 
     assert_unknown_field(&component);
     assert_unknown_field(&runtime);
@@ -225,7 +231,7 @@ fn runtime_bundle(components: Vec<PromptRuntimeComponent>) -> PromptRuntimeBundl
 }
 
 fn target_binding(content: &str) -> TargetPromptBinding {
-    TargetPromptBinding::from_content(PROMPT_VERSION_ID, 1, content, None)
+    TargetPromptBinding::from_content(PROMPT_VERSION_ID, VALID_VERSION, content)
         .expect("valid target binding")
 }
 

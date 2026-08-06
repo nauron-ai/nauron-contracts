@@ -6,8 +6,6 @@ use super::{PromptRuntimeBundle, PromptRuntimeComponent, TargetPromptBinding};
 
 const RUNTIME_HASH_DOMAIN: &[u8] = b"nauron.prompt-runtime.runtime.v2";
 const COMPOSITE_HASH_DOMAIN: &[u8] = b"nauron.prompt-runtime.composite.v2";
-const OPTIONAL_HASH_PRESENT_MARKER: &[u8] = b"some";
-const OPTIONAL_HASH_ABSENT_MARKER: &[u8] = b"none";
 
 pub fn sha256_hex(value: impl AsRef<[u8]>) -> String {
     hex::encode(Sha256::digest(value.as_ref()))
@@ -48,13 +46,6 @@ pub fn calculate_composite_hash(
         encoder.value(binding.prompt_version_id.as_bytes());
         encoder.value(&binding.prompt_version.to_be_bytes());
         encoder.value(binding.prompt_hash.as_bytes());
-        match &binding.source_bundle_hash {
-            Some(hash) => {
-                encoder.value(OPTIONAL_HASH_PRESENT_MARKER);
-                encoder.value(hash.as_bytes());
-            }
-            None => encoder.value(OPTIONAL_HASH_ABSENT_MARKER),
-        }
     }
     encoder.finish()
 }
