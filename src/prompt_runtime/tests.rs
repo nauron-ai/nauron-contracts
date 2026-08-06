@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 
+use serde::{Serialize, de::DeserializeOwned};
 use uuid::Uuid;
 
 use super::*;
@@ -10,6 +11,10 @@ const SYSTEM_COMPONENT_ID: &str = "inferencer.ingest.system";
 const USER_COMPONENT_ID: &str = "inferencer.ingest.user";
 const TARGET_KEY: &str = "revenue";
 const SYSTEM_CONTENT: &str = "system";
+const EXPECTED_RUNTIME_HASH: &str =
+    "29059d0a03b3e930868486e71a02674a5f612784ed5839f3eba012eb0b0dd392";
+const EXPECTED_COMPOSITE_HASH: &str =
+    "585ed533951d0e7ac80083953b1b885cc4fd1346e96046583d3d8725864b9cb6";
 
 #[test]
 fn target_change_preserves_runtime_hash() {
@@ -170,6 +175,37 @@ fn invalid_identity_versions_targets_and_composite_are_rejected() {
         manifest.validate(),
         Err(PromptRuntimeError::CompositeHashMismatch)
     );
+}
+
+#[test]
+fn canonical_hash_vectors_are_stable() {
+    let runtime = runtime_bundle(vec![component(SYSTEM_COMPONENT_ID, 10, SYSTEM_CONTENT)]);
+    let binding =
+        TargetPromptBinding::from_content(PROMPT_VERSION_ID, 7, "target", Some("a".repeat(64)))
+            .expect("valid target binding");
+    let manifest = manifest(runtime, BTreeMap::from([(TARGET_KEY.to_string(), binding)]));
+
+    assert_eq!(manifest.runtime_bundle.runtime_hash, EXPECTED_RUNTIME_HASH);
+    assert_eq!(manifest.composite_hash, EXPECTED_COMPOSITE_HASH);
+}
+
+#[test]
+fn unknown_contract_fields_are_rejected_at_every_level() {
+    let component = component(SYSTEM_COMPONENT_ID, 10, SYSTEM_CONTENT);
+    let runtime = runtime_bundle(vec![component.clone()]);
+    let binding = target_binding("target");
+    let manifest = manifest(runtime.clone(), targets(&[(TARGET_KEY, "target")]));
+
+    assert_unknown_field(&component);
+    assert_unknown_field(&runtime);
+    assert_unknown_field(&binding);
+    assert_unknown_field(&manifest);
+}
+
+fn assert_unknown_field<T: Serialize + DeserializeOwned>(value: &T) {
+    let mut value = serde_json::to_value(value).expect("serialize contract value");
+    value["unknown"] = serde_json::Value::Bool(true);
+    assert!(serde_json::from_value::<T>(value).is_err());
 }
 
 fn component(id: &str, execution_order: i32, content: &str) -> PromptRuntimeComponent {

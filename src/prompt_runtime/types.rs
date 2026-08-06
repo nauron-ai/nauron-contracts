@@ -14,6 +14,7 @@ use super::{
 };
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
+#[serde(deny_unknown_fields)]
 pub struct PromptRuntimeComponent {
     pub id: String,
     pub stage: PromptRuntimeStage,
@@ -68,6 +69,7 @@ impl PromptRuntimeComponent {
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
+#[serde(deny_unknown_fields)]
 pub struct PromptRuntimeBundle {
     pub id: Uuid,
     pub version: i32,
@@ -109,6 +111,7 @@ impl PromptRuntimeBundle {
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
+#[serde(deny_unknown_fields)]
 pub struct TargetPromptBinding {
     pub prompt_version_id: Uuid,
     pub prompt_version: i32,
@@ -163,6 +166,7 @@ impl TargetPromptBinding {
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
+#[serde(deny_unknown_fields)]
 pub struct CompositePromptManifestV2 {
     pub manifest_version: u16,
     pub runtime_bundle: PromptRuntimeBundle,
