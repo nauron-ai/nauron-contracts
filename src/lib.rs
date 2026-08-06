@@ -1,9 +1,9 @@
 //! Shared contracts for Nauron services and workers.
 
+pub mod autotuning;
 pub mod common;
 pub mod conditions;
 pub mod events;
-pub mod golden_sets;
 pub mod health;
 pub mod ingest;
 pub mod knowledge;
@@ -19,14 +19,6 @@ pub mod vector;
 pub use events::{
     MirEvent, MirProgress, MirResult, MirStats, RdfEvent, RdfProgress, RdfRelationStats, RdfResult,
     RdfStats, RelationMissingReason, RelationMissingStat,
-};
-pub use golden_sets::{
-    ActivateGoldenSetPromptCandidateRequest, EvaluateGoldenSetPromptCandidateRequest,
-    GenerateGoldenSetPromptCandidateRequest, GoldenSetAutotuningReadiness,
-    GoldenSetAutotuningResult, GoldenSetAutotuningRun, GoldenSetAutotuningRunStatus,
-    GoldenSetPromptActivation, GoldenSetPromptCandidate, GoldenSetPromptEvaluation,
-    GoldenSetPromptEvaluationStatus, GoldenSetPromptHistory, GoldenSetPromptScope,
-    TriggerGoldenSetAutotuningRequest,
 };
 pub use ingest::{
     IngestEvent, IngestEvidenceAnchor, IngestEvidenceSupportStatus, IngestFieldEvidence,
@@ -44,9 +36,9 @@ pub use knowledge_artifacts::{
 };
 pub use prompt_runtime::{
     CompositePromptManifestV2, INFERENCER_COMPONENT_PREFIX, PROMPT_RUNTIME_MANIFEST_VERSION,
-    PromptActivationCondition, PromptRuntimeBundle, PromptRuntimeComponent, PromptRuntimeError,
-    PromptRuntimeRole, PromptRuntimeStage, TargetPromptBinding, calculate_composite_hash,
-    calculate_runtime_hash, sha256_hex,
+    PROMPT_RUNTIME_METADATA_KEY, PromptActivationCondition, PromptRuntimeBundle,
+    PromptRuntimeComponent, PromptRuntimeError, PromptRuntimeRole, PromptRuntimeStage,
+    TargetPromptBinding, calculate_composite_hash, calculate_runtime_hash, sha256_hex,
 };
 pub use rdf::{PipelineTimings, RdfStage};
 pub use requests::{MirRequest, RdfStart};

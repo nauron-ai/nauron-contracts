@@ -14,4 +14,5 @@ pub use types::{
 };
 
 pub const PROMPT_RUNTIME_MANIFEST_VERSION: u16 = 2;
+pub const PROMPT_RUNTIME_METADATA_KEY: &str = "_nauron_prompt_bundle";
 pub const INFERENCER_COMPONENT_PREFIX: &str = "inferencer.";
