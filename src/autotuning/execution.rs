@@ -51,6 +51,8 @@ pub struct ExecuteFrozenPromptsRequest {
     pub target_key: String,
     pub type_spec: Value,
     pub language: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub instruction: Option<String>,
     pub source: FrozenPromptSourceIdentity,
     pub composite_manifest: CompositePromptManifestV2,
     pub prompts: Vec<FrozenPrompt>,

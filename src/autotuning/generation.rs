@@ -72,6 +72,8 @@ pub struct GeneratePromptCandidatesRequest {
     pub source_prompt_hash: String,
     pub composite_manifest: CompositePromptManifestV2,
     pub type_spec: Value,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub instruction: Option<String>,
     pub candidate_count: u32,
     pub actor: String,
     pub idempotency_key: String,
