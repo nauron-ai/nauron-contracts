@@ -11,6 +11,12 @@ pub enum AutotuningOperationErrorCode {
     BindingMismatch,
     #[serde(rename = "autotuning_operation_lease_changed")]
     LeaseChanged,
+    #[serde(rename = "autotuning_candidate_generation_exhausted")]
+    CandidateGenerationExhausted,
+    #[serde(rename = "autotuning_candidate_generation_failed")]
+    CandidateGenerationFailed,
+    #[serde(rename = "autotuning_operation_timeout")]
+    OperationTimeout,
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]

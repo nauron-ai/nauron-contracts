@@ -28,6 +28,18 @@ fn operation_error_codes_have_stable_wire_values() {
             AutotuningOperationErrorCode::LeaseChanged,
             "\"autotuning_operation_lease_changed\"",
         ),
+        (
+            AutotuningOperationErrorCode::CandidateGenerationExhausted,
+            "\"autotuning_candidate_generation_exhausted\"",
+        ),
+        (
+            AutotuningOperationErrorCode::CandidateGenerationFailed,
+            "\"autotuning_candidate_generation_failed\"",
+        ),
+        (
+            AutotuningOperationErrorCode::OperationTimeout,
+            "\"autotuning_operation_timeout\"",
+        ),
     ] {
         assert_eq!(
             serde_json::to_string(&code).expect("serialize code"),
