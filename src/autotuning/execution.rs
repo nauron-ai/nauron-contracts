@@ -47,6 +47,7 @@ pub struct FrozenPrompt {
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize, ToSchema)]
 #[serde(deny_unknown_fields)]
 pub struct ExecuteFrozenPromptsRequest {
+    pub idempotency_key: String,
     pub mode: FrozenPromptExecutionMode,
     pub target_key: String,
     pub type_spec: Value,
