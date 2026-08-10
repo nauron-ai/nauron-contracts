@@ -80,6 +80,7 @@ pub struct ExecuteFrozenPromptsResponse {
     pub mode: FrozenPromptExecutionMode,
     pub source_snapshot_hash: String,
     pub model_route: String,
+    pub adjudication_model_route: String,
     pub language: String,
     pub duration_ms: u64,
     pub executions: Vec<FrozenPromptExecutionResult>,

@@ -37,8 +37,10 @@ pub use knowledge_artifacts::{
 pub use prompt_runtime::{
     CompositePromptManifestV2, INFERENCER_COMPONENT_PREFIX, PROMPT_RUNTIME_MANIFEST_VERSION,
     PROMPT_RUNTIME_METADATA_KEY, PromptActivationCondition, PromptRuntimeBundle,
-    PromptRuntimeComponent, PromptRuntimeError, PromptRuntimeRole, PromptRuntimeStage,
-    TargetPromptBinding, calculate_composite_hash, calculate_runtime_hash, sha256_hex,
+    PromptRuntimeCatalog, PromptRuntimeComponent, PromptRuntimeError, PromptRuntimeHead,
+    PromptRuntimeRole, PromptRuntimeStage, PromptRuntimeTransitionRequest,
+    PromptRuntimeTransitionResponse, TargetPromptBinding, calculate_composite_hash,
+    calculate_runtime_hash, sha256_hex,
 };
 pub use rdf::{PipelineTimings, RdfStage};
 pub use requests::{MirRequest, RdfStart};
