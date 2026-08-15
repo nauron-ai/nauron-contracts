@@ -37,6 +37,7 @@ pub struct AnalysisFinding {
 #[serde(rename_all = "snake_case")]
 pub enum AnalysisProfile {
     Opportunity,
+    SecurityPattern,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]

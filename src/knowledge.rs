@@ -176,6 +176,14 @@ mod tests {
     }
 
     #[test]
+    fn analysis_profiles_use_stable_wire_names() {
+        assert_eq!(
+            serde_json::to_value(crate::AnalysisProfile::SecurityPattern).unwrap(),
+            "security_pattern"
+        );
+    }
+
+    #[test]
     fn knowledge_compile_start_defaults_options() {
         let value = serde_json::json!({
             "job_id": "11111111-1111-1111-1111-111111111111",
