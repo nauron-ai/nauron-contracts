@@ -3,7 +3,10 @@ use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use uuid::Uuid;
 
-use crate::types::{SchemaVersion, StageParseError};
+use crate::{
+    knowledge_artifacts::AnalysisProfile,
+    types::{SchemaVersion, StageParseError},
+};
 
 const DEFAULT_LANGUAGE: &str = "en";
 
@@ -30,6 +33,8 @@ pub struct KnowledgeCompileOptions {
     pub require_conflicts_with: bool,
     #[serde(default)]
     pub max_conflict_nodes: Option<u64>,
+    #[serde(default)]
+    pub analysis_profiles: Vec<AnalysisProfile>,
 }
 
 impl Default for KnowledgeCompileOptions {
@@ -38,6 +43,7 @@ impl Default for KnowledgeCompileOptions {
             language: default_language(),
             require_conflicts_with: false,
             max_conflict_nodes: None,
+            analysis_profiles: Vec::new(),
         }
     }
 }
@@ -59,6 +65,7 @@ pub enum KnowledgeCompileStage {
     Evidence,
     Timeline,
     Compiled,
+    Analysis,
     Persist,
     Completed,
 }
@@ -71,6 +78,7 @@ impl std::fmt::Display for KnowledgeCompileStage {
             Self::Evidence => "evidence",
             Self::Timeline => "timeline",
             Self::Compiled => "compiled",
+            Self::Analysis => "analysis",
             Self::Persist => "persist",
             Self::Completed => "completed",
         };
@@ -88,6 +96,7 @@ impl FromStr for KnowledgeCompileStage {
             "evidence" => Ok(Self::Evidence),
             "timeline" => Ok(Self::Timeline),
             "compiled" => Ok(Self::Compiled),
+            "analysis" => Ok(Self::Analysis),
             "persist" => Ok(Self::Persist),
             "completed" => Ok(Self::Completed),
             _ => Err(StageParseError::new(value)),
@@ -163,6 +172,7 @@ mod tests {
         assert_eq!(options.language, "en");
         assert!(!options.require_conflicts_with);
         assert_eq!(options.max_conflict_nodes, None);
+        assert!(options.analysis_profiles.is_empty());
     }
 
     #[test]

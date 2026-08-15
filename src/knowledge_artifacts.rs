@@ -9,6 +9,34 @@ pub struct KnowledgeArtifact {
     pub dossier: DossierArtifact,
     pub compiled_knowledge_view: CompiledKnowledgeView,
     pub timeline_view: TimelineView,
+    #[serde(default)]
+    pub analysis_view: AnalysisView,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct AnalysisView {
+    pub findings: Vec<AnalysisFinding>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct AnalysisFinding {
+    pub profile: AnalysisProfile,
+    pub title: String,
+    pub summary: String,
+    pub score: u8,
+    pub parties: Vec<String>,
+    pub signals: Vec<String>,
+    pub assumptions: Vec<String>,
+    pub next_step: String,
+    pub evidence: Vec<EvidenceAnchor>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum AnalysisProfile {
+    Opportunity,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -41,6 +69,8 @@ pub enum DossierScope {
 pub struct DossierMetadata {
     pub require_conflicts_with: bool,
     pub max_conflict_nodes: Option<u64>,
+    #[serde(default)]
+    pub analysis_profiles: Vec<AnalysisProfile>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
