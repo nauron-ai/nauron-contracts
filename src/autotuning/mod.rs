@@ -7,7 +7,8 @@ mod policy;
 pub use execution::{
     ExecuteFrozenPromptsRequest, ExecuteFrozenPromptsResponse, FrozenPrompt,
     FrozenPromptExecutionMode, FrozenPromptExecutionResult, FrozenPromptExecutionStatus,
-    FrozenPromptRole, FrozenPromptSourceIdentity,
+    FrozenPromptRole, FrozenPromptSourceIdentity, FrozenPromptSourceReference,
+    ResolveFrozenPromptSourceRequest, ResolveFrozenPromptSourceResponse,
 };
 pub use generation::{
     FrozenTuningExample, GeneratePromptCandidatesRequest, GeneratePromptCandidatesResponse,
