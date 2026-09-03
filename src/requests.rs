@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::rdf::ExtractionProfile;
 use crate::types::{OutputTarget, SchemaVersion, SourceRef};
 
 /// Request created by upstream services to trigger a MIR processing job.
@@ -56,4 +57,7 @@ pub struct RdfStart {
     /// Optional timestamp assigned by the orchestrator.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_at: Option<DateTime<Utc>>,
+    /// Extraction depth requested for this job.
+    #[serde(default)]
+    pub extraction_profile: ExtractionProfile,
 }

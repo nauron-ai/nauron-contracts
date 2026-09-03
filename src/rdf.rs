@@ -3,6 +3,17 @@ use std::str::FromStr;
 
 use crate::StageParseError;
 
+/// Depth of information extraction requested for an RDF enrichment job.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ExtractionProfile {
+    /// Full pipeline: baseline models, LLM entity and relation extraction, enrichment and reasoning.
+    #[default]
+    Full,
+    /// Deterministic pipeline only: pattern and baseline extractors, vectors and validation.
+    Baseline,
+}
+
 /// Logical stages executed by the RDF enrichment worker.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]

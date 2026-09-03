@@ -43,7 +43,7 @@ pub use prompt_runtime::{
     PromptRuntimeTransitionResponse, TargetPromptBinding, calculate_composite_hash,
     calculate_runtime_hash, sha256_hex,
 };
-pub use rdf::{PipelineTimings, RdfStage};
+pub use rdf::{ExtractionProfile, PipelineTimings, RdfStage};
 pub use requests::{MirRequest, RdfStart};
 pub use telemetry::{
     JobStepComponent, JobStepError, JobStepSeverity, JobStepStatus, JobStepTelemetry,
