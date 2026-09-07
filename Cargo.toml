@@ -13,6 +13,7 @@ members = [".", "crates/external-contract"]
 resolver = "3"
 
 [dependencies]
+async-graphql = { version = "7", optional = true }
 chrono = { version = "0.4.45", default-features = false, features = ["std", "serde", "clock"] }
 hex = "0.4.3"
 serde = { version = "1.0.229", features = ["derive"] }
@@ -24,4 +25,5 @@ uuid = { version = "1.24.0", features = ["v4", "serde"] }
 utoipa = { version = "5.5.0", features = ["uuid", "chrono"] }
 
 [features]
+graphql = ["dep:async-graphql"]
 sqlx = ["dep:sqlx"]
