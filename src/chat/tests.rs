@@ -13,6 +13,7 @@ fn request() -> ChatRunRequest {
             country_id: Some(Uuid::new_v4()),
             metadata: BTreeMap::new(),
         }],
+        tables: Vec::new(),
         messages: vec![ChatMessage {
             role: ChatRole::User,
             content: "What expires next year?".into(),

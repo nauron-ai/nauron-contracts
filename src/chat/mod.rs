@@ -4,7 +4,9 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 mod search;
+mod tables;
 pub use search::*;
+pub use tables::*;
 
 const MAX_HISTORY_MESSAGES: usize = 60;
 const MAX_HISTORY_CHARACTERS: usize = 100_000;
@@ -77,6 +79,8 @@ pub struct ChatRunRequest {
     pub scope: ChatScope,
     pub contracts: Vec<ChatContract>,
     pub messages: Vec<ChatMessage>,
+    #[serde(default)]
+    pub tables: Vec<ChatTable>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -100,6 +104,8 @@ pub struct ChatRunResponse {
     pub prompt_tokens: u64,
     pub completion_tokens: u64,
     pub tool_calls: u32,
+    #[serde(default)]
+    pub artifacts: Vec<ChatArtifact>,
 }
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
@@ -114,10 +120,15 @@ pub enum ChatValidationError {
     InvalidHistory,
     #[error("chat history exceeds the supported limit")]
     HistoryLimit,
+    #[error("chat table or artifact has invalid identifiers, columns, rows or filename")]
+    InvalidTable,
+    #[error("chat tables or artifacts exceed supported limits")]
+    TableLimit,
 }
 
 impl ChatRunRequest {
     pub fn validate(&self) -> Result<(), ChatValidationError> {
+        validate_chat_tables(&self.tables)?;
         if self.contracts.is_empty() {
             return Err(ChatValidationError::EmptyScope);
         }
