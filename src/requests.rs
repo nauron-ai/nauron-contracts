@@ -40,6 +40,8 @@ fn default_attempt() -> u16 {
 /// Request emitted by the gateway to start RDF enrichment.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RdfStart {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file_analysis: Option<FileAnalysisInput>,
     /// Schema revision for the payload.
     #[serde(default)]
     pub schema_version: SchemaVersion,
@@ -60,4 +62,11 @@ pub struct RdfStart {
     /// Extraction depth requested for this job.
     #[serde(default)]
     pub extraction_profile: ExtractionProfile,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FileAnalysisInput {
+    pub analysis_id: Uuid,
+    pub profile_id: String,
+    pub mir_sha256: String,
 }

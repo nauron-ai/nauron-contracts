@@ -45,7 +45,7 @@ pub use prompt_runtime::{
     calculate_runtime_hash, sha256_hex,
 };
 pub use rdf::{ExtractionProfile, PipelineTimings, RdfStage};
-pub use requests::{MirRequest, RdfStart};
+pub use requests::{FileAnalysisInput, MirRequest, RdfStart};
 pub use telemetry::{
     JobStepComponent, JobStepError, JobStepSeverity, JobStepStatus, JobStepTelemetry,
     JobTelemetryEvent,

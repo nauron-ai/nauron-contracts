@@ -89,3 +89,7 @@ python3 scripts/loc_check.py 250 rs
 cargo +1.97.1 clippy --workspace --all-targets --all-features -- -D warnings
 cargo +1.97.1 test --workspace --all-targets --all-features
 ```
+
+## 0.2 migration
+
+Rust producers of `RdfStart` must provide `file_analysis` (`None` for ordinary document jobs) and `extraction_profile` (`ExtractionProfile::Full` for the full pipeline). Older JSON messages remain readable through the field defaults. Atlas file jobs provide the reserved analysis ID, profile ID and MIR digest in `file_analysis`.

@@ -1,4 +1,5 @@
 mod callback;
+pub mod file_contexts;
 mod requests;
 
 pub use callback::{NauronCallback, NauronCallbackEventType, NauronCallbackStatus};
