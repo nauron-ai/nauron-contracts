@@ -27,6 +27,10 @@ pub enum NauronCallbackEventType {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "engine", rename_all = "snake_case")]
 pub enum NauronCallback {
+    FileContextChanged {
+        request_id: Uuid,
+        snapshot: crate::file_contexts::FileContextSnapshot,
+    },
     Mir {
         event_type: NauronCallbackEventType,
         status: NauronCallbackStatus,
@@ -48,4 +52,15 @@ pub enum NauronCallback {
         context_id: i64,
         event: ConditionsEvaluateEvent,
     },
+}
+
+impl NauronCallback {
+    pub fn job_status(&self) -> Option<(uuid::Uuid, NauronCallbackStatus)> {
+        match self {
+            Self::Mir { job_id, status, .. }
+            | Self::Ingest { job_id, status, .. }
+            | Self::Conditions { job_id, status, .. } => Some((*job_id, *status)),
+            Self::FileContextChanged { .. } => None,
+        }
+    }
 }
