@@ -2,6 +2,8 @@ use super::*;
 
 fn request() -> ChatRunRequest {
     ChatRunRequest {
+        datasets: Vec::new(),
+        data_source: None,
         run_id: Uuid::new_v4(),
         user_id: Uuid::new_v4(),
         model: ChatModel::Gpt,

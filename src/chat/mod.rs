@@ -3,6 +3,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+mod datasets;
+pub use datasets::*;
 mod search;
 mod tables;
 pub use search::*;
@@ -78,6 +80,10 @@ pub struct ChatRunRequest {
     pub messages: Vec<ChatMessage>,
     #[serde(default)]
     pub tables: Vec<ChatTable>,
+    #[serde(default)]
+    pub datasets: Vec<ChatDataset>,
+    #[serde(default)]
+    pub data_source: Option<ChatDataSource>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -126,6 +132,7 @@ pub enum ChatValidationError {
 impl ChatRunRequest {
     pub fn validate(&self) -> Result<(), ChatValidationError> {
         validate_chat_tables(&self.tables)?;
+        validate_chat_datasets(&self.datasets, self.data_source.as_ref())?;
         if self.contracts.is_empty() {
             return Err(ChatValidationError::EmptyScope);
         }
