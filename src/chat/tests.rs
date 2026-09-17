@@ -2,6 +2,8 @@ use super::*;
 
 fn request() -> ChatRunRequest {
     ChatRunRequest {
+        datasets: Vec::new(),
+        data_source: None,
         run_id: Uuid::new_v4(),
         user_id: Uuid::new_v4(),
         model: ChatModel::Gpt,
@@ -13,6 +15,7 @@ fn request() -> ChatRunRequest {
             country_id: Some(Uuid::new_v4()),
             metadata: BTreeMap::new(),
         }],
+        tables: Vec::new(),
         messages: vec![ChatMessage {
             role: ChatRole::User,
             content: "What expires next year?".into(),
@@ -62,4 +65,15 @@ fn followup_requires_completed_conversation_order() {
         content: "Which ones?".into(),
     });
     assert!(input.validate().is_ok());
+}
+
+#[cfg(feature = "sqlx")]
+#[test]
+fn models_use_standard_sql_text() {
+    use sqlx::{Postgres, Type};
+
+    assert_eq!(
+        <ChatModel as Type<Postgres>>::type_info(),
+        <str as Type<Postgres>>::type_info()
+    );
 }

@@ -1,8 +1,6 @@
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-pub const TARGET_PROMPT_COMPONENT_ID: &str = "apcoa.datapoint.normalized_prompt";
-
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum PromptTuningScope {
@@ -17,14 +15,14 @@ pub struct PromptTuningPolicy {
 }
 
 impl PromptTuningPolicy {
-    pub fn target() -> Self {
+    pub fn target(component_id: &str) -> Self {
         Self {
             tuning_scope: PromptTuningScope::Target,
-            allowed_component_ids: vec![TARGET_PROMPT_COMPONENT_ID.to_string()],
+            allowed_component_ids: vec![component_id.to_string()],
         }
     }
 
-    pub fn is_target(&self) -> bool {
-        self == &Self::target()
+    pub fn is_target(&self, component_id: &str) -> bool {
+        self == &Self::target(component_id)
     }
 }
