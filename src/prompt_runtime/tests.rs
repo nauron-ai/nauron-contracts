@@ -120,7 +120,7 @@ fn duplicate_components_are_rejected() {
 #[test]
 fn non_inferencer_components_are_rejected() {
     let result = PromptRuntimeComponent::new(
-        "apcoa.datapoint.normalized_prompt",
+        "example.target.prompt",
         PromptRuntimeStage::Ingest,
         PromptRuntimeRole::User,
         PromptActivationCondition::Always,
@@ -131,7 +131,7 @@ fn non_inferencer_components_are_rejected() {
     assert_eq!(
         result,
         Err(PromptRuntimeError::InvalidComponentId(
-            "apcoa.datapoint.normalized_prompt".to_string()
+            "example.target.prompt".to_string()
         ))
     );
 }

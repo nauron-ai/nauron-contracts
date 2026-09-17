@@ -2,9 +2,9 @@ use super::*;
 
 fn table() -> ChatTable {
     ChatTable {
-        id: "finance:example".into(),
-        name: "Finance.csv".into(),
-        columns: vec!["Revenue".into(), "Contract ID".into()],
+        id: "table:example".into(),
+        name: "data.csv".into(),
+        columns: vec!["Amount".into(), "Record ID".into()],
         rows: vec![vec!["001.20".into(), Uuid::new_v4().to_string()]],
     }
 }
@@ -22,7 +22,7 @@ fn tables_preserve_strings_and_require_rectangular_unique_headers() {
         Err(ChatValidationError::InvalidTable)
     );
     let mut input = table();
-    input.columns[1] = " revenue ".into();
+    input.columns[1] = " amount ".into();
     assert_eq!(
         validate_chat_tables(&[input]),
         Err(ChatValidationError::InvalidTable)
@@ -62,7 +62,7 @@ fn artifacts_reject_paths_and_ambiguous_identifiers() {
     ] {
         assert!(!valid_csv_filename(filename));
     }
-    assert!(valid_csv_filename("Finance expanded.csv"));
+    assert!(valid_csv_filename("Expanded data.csv"));
     let input = table();
     let mut artifact = ChatArtifact {
         id: Uuid::new_v4(),

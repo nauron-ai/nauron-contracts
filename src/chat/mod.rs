@@ -15,10 +15,7 @@ const MAX_HISTORY_CHARACTERS: usize = 100_000;
 #[cfg_attr(feature = "graphql", derive(async_graphql::Enum))]
 #[cfg_attr(feature = "graphql", graphql(rename_items = "lowercase"))]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
-#[cfg_attr(
-    feature = "sqlx",
-    sqlx(type_name = "juliette_chat_model", rename_all = "lowercase")
-)]
+#[cfg_attr(feature = "sqlx", sqlx(type_name = "text", rename_all = "lowercase"))]
 #[serde(rename_all = "kebab-case")]
 pub enum ChatModel {
     Gpt,

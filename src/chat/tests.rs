@@ -64,3 +64,14 @@ fn followup_requires_completed_conversation_order() {
     });
     assert!(input.validate().is_ok());
 }
+
+#[cfg(feature = "sqlx")]
+#[test]
+fn models_use_standard_sql_text() {
+    use sqlx::{Postgres, Type};
+
+    assert_eq!(
+        <ChatModel as Type<Postgres>>::type_info(),
+        <str as Type<Postgres>>::type_info()
+    );
+}

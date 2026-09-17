@@ -21,7 +21,7 @@ pub use limits::{
     MIN_AUTOTUNING_CLIENT_TIMEOUT_SECS,
 };
 pub use operation_error::{AutotuningOperationErrorCode, AutotuningOperationErrorResponse};
-pub use policy::{PromptTuningPolicy, PromptTuningScope, TARGET_PROMPT_COMPONENT_ID};
+pub use policy::{PromptTuningPolicy, PromptTuningScope};
 
 #[cfg(test)]
 mod tests;

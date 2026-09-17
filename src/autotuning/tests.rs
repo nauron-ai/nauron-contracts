@@ -1,12 +1,15 @@
 use super::*;
 
+const TARGET_COMPONENT_ID: &str = "example.target.prompt";
+
 #[test]
 fn target_policy_has_one_allowed_component() {
-    let policy = PromptTuningPolicy::target();
+    let policy = PromptTuningPolicy::target(TARGET_COMPONENT_ID);
 
-    assert!(policy.is_target());
+    assert!(policy.is_target(TARGET_COMPONENT_ID));
+    assert!(!policy.is_target("another.target.prompt"));
     assert_eq!(policy.tuning_scope, PromptTuningScope::Target);
-    assert_eq!(policy.allowed_component_ids, [TARGET_PROMPT_COMPONENT_ID]);
+    assert_eq!(policy.allowed_component_ids, [TARGET_COMPONENT_ID]);
 }
 
 #[test]
