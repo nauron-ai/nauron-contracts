@@ -78,11 +78,11 @@ pub struct ChatRunRequest {
     pub scope: ChatScope,
     pub contracts: Vec<ChatContract>,
     pub messages: Vec<ChatMessage>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub tables: Vec<ChatTable>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub datasets: Vec<ChatDataset>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data_source: Option<ChatDataSource>,
 }
 
@@ -107,7 +107,7 @@ pub struct ChatRunResponse {
     pub prompt_tokens: u64,
     pub completion_tokens: u64,
     pub tool_calls: u32,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub artifacts: Vec<ChatArtifact>,
 }
 
@@ -184,3 +184,6 @@ impl ChatRunRequest {
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod compatibility_tests;
