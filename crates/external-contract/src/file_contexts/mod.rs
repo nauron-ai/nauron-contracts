@@ -75,10 +75,22 @@ pub fn mime_type_for_extension(extension: &str) -> Option<&'static str> {
         "pdf" => "application/pdf",
         "png" => "image/png",
         "jpg" | "jpeg" => "image/jpeg",
-        "gif" => "image/gif",
-        "bmp" => "image/bmp",
-        "webp" => "image/webp",
         "tif" | "tiff" => "image/tiff",
         _ => return None,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::mime_type_for_extension;
+
+    #[test]
+    fn exposes_only_formats_supported_by_document_extraction() {
+        for extension in ["pdf", "png", "jpg", "jpeg", "tif", "tiff"] {
+            assert!(mime_type_for_extension(extension).is_some());
+        }
+        for extension in ["gif", "bmp", "webp"] {
+            assert_eq!(mime_type_for_extension(extension), None);
+        }
+    }
 }
