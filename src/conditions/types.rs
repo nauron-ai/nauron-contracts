@@ -14,6 +14,13 @@ pub enum ConditionContextMode {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, ToSchema, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum ConditionEvaluationProfile {
+    Standard,
+    Atlas,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, ToSchema, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum SeverityLevel {
     Low,
@@ -60,6 +67,8 @@ pub struct ConditionEvaluationOptions {
     pub evidence_lang: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lang: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub output_lang: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
@@ -76,6 +85,8 @@ pub struct ConditionEvaluationRequest {
     pub options: Option<ConditionEvaluationOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub context_mode: Option<ConditionContextMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub profile: Option<ConditionEvaluationProfile>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]

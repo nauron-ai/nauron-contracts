@@ -20,6 +20,7 @@ pub struct ConditionEvaluationOptionsResolved {
     pub max_candidates: u32,
     pub max_hops: u8,
     pub evidence_lang: Option<String>,
+    pub output_lang: Option<String>,
 }
 
 pub const MAX_CONDITIONS_PER_REQUEST: usize = 1000;
@@ -70,13 +71,14 @@ pub fn normalize_options(
     options: Option<&ConditionEvaluationOptions>,
     limits: ConditionLimits,
 ) -> Result<ConditionEvaluationOptionsResolved, ConditionValidationError> {
-    let (max_candidates_raw, max_hops_raw, evidence_lang) = match options {
+    let (max_candidates_raw, max_hops_raw, evidence_lang, output_lang) = match options {
         Some(opts) => (
             opts.max_candidates,
             opts.max_hops,
             opts.evidence_lang.clone().or(opts.lang.clone()),
+            opts.output_lang.clone(),
         ),
-        None => (None, None, None),
+        None => (None, None, None, None),
     };
 
     let max_candidates = max_candidates_raw.unwrap_or(limits.default_max_candidates);
@@ -105,6 +107,7 @@ pub fn normalize_options(
         max_candidates,
         max_hops,
         evidence_lang,
+        output_lang,
     })
 }
 
@@ -159,11 +162,13 @@ mod tests {
             max_hops: Some(2),
             evidence_lang: Some("pl".to_string()),
             lang: Some("en".to_string()),
+            output_lang: Some("en".to_string()),
         };
 
         let resolved = normalize_options(Some(&options), ConditionLimits::default()).unwrap();
 
         assert_eq!(resolved.evidence_lang.as_deref(), Some("pl"));
+        assert_eq!(resolved.output_lang.as_deref(), Some("en"));
     }
 
     #[test]
@@ -173,6 +178,7 @@ mod tests {
             max_hops: Some(2),
             evidence_lang: None,
             lang: Some("en".to_string()),
+            output_lang: None,
         };
 
         let resolved = normalize_options(Some(&options), ConditionLimits::default()).unwrap();

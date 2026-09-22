@@ -31,10 +31,11 @@ pub use knowledge::{
     KnowledgeCompileResult, KnowledgeCompileStage, KnowledgeCompileStart,
 };
 pub use knowledge_artifacts::{
-    AnalysisFinding, AnalysisProfile, AnalysisView, CompiledKnowledgeView, DossierArtifact,
-    DossierMetadata, DossierRole, DossierScope, EvidenceAnchor, KnowledgeArtifact, KnowledgeHint,
-    TimelineEdge, TimelineEdgeKind, TimelineNode, TimelineNodeKind, TimelineNodeStatus,
-    TimelineView,
+    AnalysisFinding, AnalysisProfile, AnalysisView, CompiledKnowledgeView, ContractDocumentStory,
+    ContractParty, ContractRelationship, ContractRelationshipModality, ContractStory,
+    DossierArtifact, DossierMetadata, DossierRole, DossierScope, EvidenceAnchor, KnowledgeArtifact,
+    KnowledgeHint, TimelineEdge, TimelineEdgeKind, TimelineNode, TimelineNodeKind,
+    TimelineNodeStatus, TimelineView, TranslatedEvidenceAnchor,
 };
 pub use prompt_runtime::{
     CompositePromptManifestV2, INFERENCER_COMPONENT_PREFIX, PROMPT_RUNTIME_MANIFEST_VERSION,

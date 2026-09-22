@@ -4,7 +4,9 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 use nauron_contracts::IngestSchemaField;
-use nauron_contracts::conditions::{ConditionEvaluationOptions, ConditionSpec};
+use nauron_contracts::conditions::{
+    ConditionEvaluationOptions, ConditionEvaluationProfile, ConditionSpec,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CallbackTarget {
@@ -28,6 +30,8 @@ pub struct CreateIngestJobRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CreateConditionsEvaluateJobRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub profile: Option<ConditionEvaluationProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub document_hint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

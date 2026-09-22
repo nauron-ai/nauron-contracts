@@ -148,10 +148,70 @@ pub struct EvidenceAnchor {
 pub struct CompiledKnowledgeView {
     pub dossier_name: String,
     pub brief: String,
+    #[serde(default)]
+    pub contract_story: ContractStory,
     pub active_surfaces: Vec<KnowledgeHint>,
     pub temporal_hints: Vec<KnowledgeHint>,
     pub conflict_hints: Vec<KnowledgeHint>,
     pub retrieval_hints: Vec<KnowledgeHint>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct ContractStory {
+    pub language: String,
+    pub documents: Vec<ContractDocumentStory>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct ContractDocumentStory {
+    pub doc_id: Uuid,
+    pub parties: Vec<ContractParty>,
+    pub relationships: Vec<ContractRelationship>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct ContractParty {
+    pub id: String,
+    pub canonical_name: String,
+    pub aliases: Vec<String>,
+    pub roles: Vec<String>,
+    pub evidence: Vec<TranslatedEvidenceAnchor>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct ContractRelationship {
+    pub subject_party_id: String,
+    pub predicate: String,
+    pub object_party_id: Option<String>,
+    pub object: String,
+    pub modality: ContractRelationshipModality,
+    pub conditions: Vec<String>,
+    pub evidence: Vec<TranslatedEvidenceAnchor>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum ContractRelationshipModality {
+    Definition,
+    Grant,
+    Permission,
+    Obligation,
+    Prohibition,
+    Other,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct TranslatedEvidenceAnchor {
+    pub doc_id: Uuid,
+    pub paragraph_id: String,
+    pub source_quote: String,
+    pub source_language: Option<String>,
+    pub english_translation: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -161,4 +221,25 @@ pub struct KnowledgeHint {
     pub summary: String,
     pub evidence: Vec<EvidenceAnchor>,
     pub timeline_node_id: String,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::CompiledKnowledgeView;
+
+    #[test]
+    fn legacy_compiled_view_defaults_contract_story() {
+        let value = serde_json::json!({
+            "dossier_name": "Agreement",
+            "brief": "Current state",
+            "active_surfaces": [],
+            "temporal_hints": [],
+            "conflict_hints": [],
+            "retrieval_hints": []
+        });
+
+        let parsed: CompiledKnowledgeView = serde_json::from_value(value).unwrap();
+
+        assert!(parsed.contract_story.documents.is_empty());
+    }
 }

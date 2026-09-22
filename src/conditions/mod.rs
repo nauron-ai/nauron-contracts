@@ -9,10 +9,10 @@ pub use job::{
 };
 pub use types::{
     ConditionContextMode, ConditionErrorPayload, ConditionErrorResponse,
-    ConditionEvaluationErrorCode, ConditionEvaluationOptions, ConditionEvaluationRequest,
-    ConditionEvaluationResponse, ConditionEvaluationResult, ConditionMatch, ConditionParameters,
-    ConditionRawEvidence, ConditionSpec, ConditionTokensUsed, ConditionVerdict, RiskLevel,
-    SeverityLevel,
+    ConditionEvaluationErrorCode, ConditionEvaluationOptions, ConditionEvaluationProfile,
+    ConditionEvaluationRequest, ConditionEvaluationResponse, ConditionEvaluationResult,
+    ConditionMatch, ConditionParameters, ConditionRawEvidence, ConditionSpec, ConditionTokensUsed,
+    ConditionVerdict, RiskLevel, SeverityLevel,
 };
 pub use validation::{
     ConditionEvaluationOptionsResolved, ConditionLimits, ConditionValidationError, validate_request,

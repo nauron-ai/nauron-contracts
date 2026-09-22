@@ -4,7 +4,8 @@ use std::str::FromStr;
 use uuid::Uuid;
 
 use super::types::{
-    ConditionContextMode, ConditionEvaluationOptions, ConditionEvaluationResponse, ConditionSpec,
+    ConditionContextMode, ConditionEvaluationOptions, ConditionEvaluationProfile,
+    ConditionEvaluationResponse, ConditionSpec,
 };
 use crate::types::{SchemaVersion, StageParseError};
 
@@ -25,6 +26,8 @@ pub struct ConditionsEvaluateStart {
     pub options: Option<ConditionEvaluationOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub context_mode: Option<ConditionContextMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub profile: Option<ConditionEvaluationProfile>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submitted_at: Option<DateTime<Utc>>,
 }
@@ -121,7 +124,7 @@ pub enum ConditionsEvaluateEvent {
 
 #[cfg(test)]
 mod tests {
-    use super::ConditionsEvaluateStage;
+    use super::{ConditionEvaluationProfile, ConditionsEvaluateStage};
 
     #[test]
     fn conditions_stage_labels_roundtrip() {
@@ -131,5 +134,13 @@ mod tests {
             ConditionsEvaluateStage::Reason
         ));
         assert!("unknown".parse::<ConditionsEvaluateStage>().is_err());
+    }
+
+    #[test]
+    fn atlas_profile_has_stable_wire_name() {
+        assert_eq!(
+            serde_json::to_value(ConditionEvaluationProfile::Atlas).unwrap(),
+            serde_json::json!("atlas")
+        );
     }
 }
