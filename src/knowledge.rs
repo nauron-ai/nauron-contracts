@@ -35,6 +35,16 @@ pub struct KnowledgeCompileOptions {
     pub max_conflict_nodes: Option<u64>,
     #[serde(default)]
     pub analysis_profiles: Vec<AnalysisProfile>,
+    #[serde(default)]
+    pub source: KnowledgeCompileSource,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum KnowledgeCompileSource {
+    #[default]
+    Standard,
+    Atlas,
 }
 
 impl Default for KnowledgeCompileOptions {
@@ -44,6 +54,7 @@ impl Default for KnowledgeCompileOptions {
             require_conflicts_with: false,
             max_conflict_nodes: None,
             analysis_profiles: Vec::new(),
+            source: KnowledgeCompileSource::Standard,
         }
     }
 }
@@ -160,7 +171,7 @@ pub enum KnowledgeCompileEvent {
 mod tests {
     use super::{
         KnowledgeCompileEvent, KnowledgeCompileOptions, KnowledgeCompileResult,
-        KnowledgeCompileStage, KnowledgeCompileStart,
+        KnowledgeCompileSource, KnowledgeCompileStage, KnowledgeCompileStart,
     };
     use chrono::Utc;
     use uuid::Uuid;
@@ -173,6 +184,7 @@ mod tests {
         assert!(!options.require_conflicts_with);
         assert_eq!(options.max_conflict_nodes, None);
         assert!(options.analysis_profiles.is_empty());
+        assert_eq!(options.source, KnowledgeCompileSource::Standard);
     }
 
     #[test]

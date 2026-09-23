@@ -9,6 +9,8 @@ pub mod health;
 pub mod ingest;
 pub mod knowledge;
 pub mod knowledge_artifacts;
+pub mod knowledge_atlas;
+pub mod knowledge_finance;
 pub mod prompt_runtime;
 pub mod rdf;
 pub mod requests;
@@ -28,14 +30,20 @@ pub use ingest::{
 };
 pub use knowledge::{
     KnowledgeCompileEvent, KnowledgeCompileOptions, KnowledgeCompileProgress,
-    KnowledgeCompileResult, KnowledgeCompileStage, KnowledgeCompileStart,
+    KnowledgeCompileResult, KnowledgeCompileSource, KnowledgeCompileStage, KnowledgeCompileStart,
 };
 pub use knowledge_artifacts::{
     AnalysisFinding, AnalysisProfile, AnalysisView, CompiledKnowledgeView, ContractDocumentStory,
-    ContractParty, ContractRelationship, ContractRelationshipModality, ContractStory,
-    DossierArtifact, DossierMetadata, DossierRole, DossierScope, EvidenceAnchor, KnowledgeArtifact,
+    ContractFinancialFlow, ContractParty, ContractRelationship, ContractRelationshipModality,
+    ContractStory, DossierArtifact, DossierMetadata, DossierRole, DossierScope, EvidenceAnchor,
+    FinancialFlowCertainty, FinancialFlowKind, FinancialFlowStatus, KnowledgeArtifact,
     KnowledgeHint, TimelineEdge, TimelineEdgeKind, TimelineNode, TimelineNodeKind,
     TimelineNodeStatus, TimelineView, TranslatedEvidenceAnchor,
+};
+pub use knowledge_atlas::{
+    AtlasCertainty, AtlasContractStory, AtlasDocumentEvent, AtlasDocumentFacts,
+    AtlasDocumentLifecycle, AtlasDocumentRelationship, AtlasDocumentRelationshipKind,
+    AtlasEventKind, AtlasParty, AtlasPartyAppearance,
 };
 pub use prompt_runtime::{
     CompositePromptManifestV2, INFERENCER_COMPONENT_PREFIX, PROMPT_RUNTIME_MANIFEST_VERSION,
