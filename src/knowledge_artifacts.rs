@@ -3,6 +3,11 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+pub use crate::knowledge_finance::{
+    ContractFinancialFlow, ContractStory, FinancialFlowCertainty, FinancialFlowKind,
+    FinancialFlowStatus,
+};
+
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 #[serde(deny_unknown_fields)]
 pub struct KnowledgeArtifact {
@@ -133,6 +138,7 @@ pub enum TimelineEdgeKind {
     ConflictsWith,
     Supports,
     DerivedFrom,
+    Implements,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -154,13 +160,6 @@ pub struct CompiledKnowledgeView {
     pub temporal_hints: Vec<KnowledgeHint>,
     pub conflict_hints: Vec<KnowledgeHint>,
     pub retrieval_hints: Vec<KnowledgeHint>,
-}
-
-#[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
-#[serde(deny_unknown_fields)]
-pub struct ContractStory {
-    pub language: String,
-    pub documents: Vec<ContractDocumentStory>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
