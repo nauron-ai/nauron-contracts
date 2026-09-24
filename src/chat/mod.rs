@@ -5,6 +5,10 @@ use uuid::Uuid;
 
 mod datasets;
 pub use datasets::*;
+mod actions;
+pub use actions::*;
+mod reporting;
+pub use reporting::*;
 mod search;
 mod tables;
 pub use search::*;
@@ -84,6 +88,8 @@ pub struct ChatRunRequest {
     pub datasets: Vec<ChatDataset>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data_source: Option<ChatDataSource>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub action_tools: Vec<ChatActionDefinition>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -127,12 +133,18 @@ pub enum ChatValidationError {
     InvalidTable,
     #[error("chat tables or artifacts exceed supported limits")]
     TableLimit,
+    #[error("chat action definition or input is invalid")]
+    InvalidAction,
 }
 
 impl ChatRunRequest {
     pub fn validate(&self) -> Result<(), ChatValidationError> {
         validate_chat_tables(&self.tables)?;
         validate_chat_datasets(&self.datasets, self.data_source.as_ref())?;
+        validate_chat_actions(&self.action_tools)?;
+        if self.datasets.is_empty() && self.action_tools.is_empty() && self.data_source.is_some() {
+            return Err(ChatValidationError::InvalidTable);
+        }
         if self.contracts.is_empty() {
             return Err(ChatValidationError::EmptyScope);
         }
