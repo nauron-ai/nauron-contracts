@@ -4,6 +4,7 @@ fn request() -> ChatRunRequest {
     ChatRunRequest {
         datasets: Vec::new(),
         data_source: None,
+        action_tools: Vec::new(),
         run_id: Uuid::new_v4(),
         user_id: Uuid::new_v4(),
         model: ChatModel::Gpt,
@@ -76,4 +77,23 @@ fn models_use_standard_sql_text() {
         <ChatModel as Type<Postgres>>::type_info(),
         <str as Type<Postgres>>::type_info()
     );
+}
+
+#[test]
+fn action_descriptors_work_before_and_after_the_worker_attaches_its_callback() {
+    let mut input = request();
+    input.action_tools.push(ChatActionDefinition {
+        name: "calculate_report".into(),
+        description: "Calculate a report from authorized data".into(),
+        parameters: serde_json::json!({"type":"object","properties":{}}),
+        grounding_instruction: None,
+    });
+    assert!(input.validate().is_ok());
+    input.data_source = Some(ChatDataSource {
+        query_url: "https://worker.example.test/data".into(),
+        lease_owner: Uuid::new_v4(),
+    });
+    assert!(input.validate().is_ok());
+    input.action_tools.clear();
+    assert_eq!(input.validate(), Err(ChatValidationError::InvalidTable));
 }

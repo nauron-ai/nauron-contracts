@@ -13,6 +13,10 @@ pub struct ChatDataset {
     pub name: String,
     pub columns: Vec<String>,
     pub row_count: u64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reporting: Option<super::ChatReportingContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub coverage: Option<super::ChatDatasetCoverage>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -99,10 +103,15 @@ pub fn validate_chat_datasets(
     if datasets.len() > MAX_CHAT_TABLES {
         return Err(ChatValidationError::TableLimit);
     }
-    if datasets.is_empty() && source.is_some() {
-        return Err(ChatValidationError::InvalidTable);
-    }
     let mut ids = std::collections::BTreeSet::new();
+    for dataset in datasets {
+        if let Some(reporting) = &dataset.reporting {
+            reporting.validate()?;
+        }
+        if let Some(coverage) = &dataset.coverage {
+            coverage.validate(dataset.row_count)?;
+        }
+    }
     if datasets.iter().any(|table| {
         table.id.is_empty()
             || table.name.is_empty()
@@ -135,6 +144,8 @@ mod tests {
             name: "Snapshot".into(),
             columns: vec!["Amount".into()],
             row_count: 1_000_000,
+            reporting: None,
+            coverage: None,
         };
         assert!(validate_chat_datasets(std::slice::from_ref(&dataset), None).is_ok());
         assert!(serde_json::to_string(&dataset).unwrap().len() < 150);
@@ -159,5 +170,43 @@ mod tests {
             MAX_DATA_FILTERS + 1
         ];
         assert!(query.validate().is_err());
+    }
+
+    #[test]
+    fn dataset_validation_checks_coverage_overflow_and_reporting_context() {
+        let mut dataset = ChatDataset {
+            id: "finance:version".into(),
+            name: "Finance".into(),
+            columns: vec!["Revenue".into()],
+            row_count: 2,
+            reporting: None,
+            coverage: Some(super::super::ChatDatasetCoverage {
+                source_rows: 9,
+                unlinked_rows: 3,
+                outside_scope_rows: 4,
+            }),
+        };
+        assert!(validate_chat_datasets(std::slice::from_ref(&dataset), None).is_ok());
+        dataset.coverage.as_mut().unwrap().source_rows = 10;
+        assert_eq!(
+            validate_chat_datasets(std::slice::from_ref(&dataset), None),
+            Err(ChatValidationError::InvalidTable)
+        );
+        dataset.row_count = u64::MAX;
+        assert_eq!(
+            validate_chat_datasets(std::slice::from_ref(&dataset), None),
+            Err(ChatValidationError::InvalidTable)
+        );
+        dataset.coverage = None;
+        dataset.reporting = Some(super::super::ChatReportingContext {
+            period_start: None,
+            period_end: None,
+            currency: Some("eur".into()),
+            profit_measure: super::super::ChatProfitMeasure::GopbdProxy,
+        });
+        assert_eq!(
+            validate_chat_datasets(&[dataset], None),
+            Err(ChatValidationError::InvalidTable)
+        );
     }
 }
