@@ -9,6 +9,7 @@ use super::{ChatArtifact, ChatDataPage, ChatDataQuery, ChatSource, ChatValidatio
 const MAX_ACTIONS: usize = 32;
 const MAX_ACTION_NAME_BYTES: usize = 64;
 const MAX_ACTION_TEXT_BYTES: usize = 100_000;
+const MAX_ACTIONS_TOTAL_BYTES: usize = 200_000;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -84,6 +85,18 @@ impl ChatActionCall {
 
 pub fn validate_chat_actions(actions: &[ChatActionDefinition]) -> Result<(), ChatValidationError> {
     if actions.len() > MAX_ACTIONS {
+        return Err(ChatValidationError::InvalidAction);
+    }
+    let total: usize = actions
+        .iter()
+        .map(|action| {
+            action.name.len()
+                + action.description.len()
+                + action.parameters.to_string().len()
+                + action.grounding_instruction.as_ref().map_or(0, String::len)
+        })
+        .sum();
+    if total > MAX_ACTIONS_TOTAL_BYTES {
         return Err(ChatValidationError::InvalidAction);
     }
     let mut names = BTreeSet::new();

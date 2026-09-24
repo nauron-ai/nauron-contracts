@@ -76,3 +76,13 @@ fn action_business_errors_are_distinct_from_results_and_legacy_pages() {
         .is_err()
     );
 }
+
+#[test]
+fn action_tools_share_one_aggregate_prompt_budget() {
+    let mut first = definition();
+    first.description = "a".repeat(MAX_ACTION_TEXT_BYTES);
+    let mut second = first.clone();
+    second.name = "another_report".into();
+    assert!(validate_chat_actions(std::slice::from_ref(&first)).is_ok());
+    assert!(validate_chat_actions(&[first, second]).is_err());
+}
