@@ -3,6 +3,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+mod verification;
+pub use verification::*;
 mod progress;
 pub use progress::*;
 mod datasets;
@@ -111,6 +113,8 @@ pub struct ChatRunResponse {
     pub model: ChatModel,
     pub actual_model: String,
     pub answer: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub verification: Option<ChatVerification>,
     pub sources: Vec<ChatSource>,
     pub prompt_tokens: u64,
     pub completion_tokens: u64,
