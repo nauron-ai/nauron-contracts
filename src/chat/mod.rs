@@ -3,6 +3,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+mod progress;
+pub use progress::*;
 mod datasets;
 pub use datasets::*;
 mod actions;
