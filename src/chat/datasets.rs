@@ -24,6 +24,8 @@ pub struct ChatDataset {
 pub struct ChatDataSource {
     pub query_url: String,
     pub lease_owner: Uuid,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub progress_url: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -126,8 +128,14 @@ pub fn validate_chat_datasets(
                 .len()
                 != table.columns.len()
             || !ids.insert(&table.id)
-    }) || source.is_some_and(|source| source.lease_owner.is_nil() || source.query_url.is_empty())
-    {
+    }) || source.is_some_and(|source| {
+        source.lease_owner.is_nil()
+            || source.query_url.is_empty()
+            || source
+                .progress_url
+                .as_ref()
+                .is_some_and(|url| url.is_empty())
+    }) {
         return Err(ChatValidationError::InvalidTable);
     }
     Ok(())

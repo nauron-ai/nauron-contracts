@@ -92,6 +92,7 @@ fn action_descriptors_work_before_and_after_the_worker_attaches_its_callback() {
     input.data_source = Some(ChatDataSource {
         query_url: "https://worker.example.test/data".into(),
         lease_owner: Uuid::new_v4(),
+        progress_url: None,
     });
     assert!(input.validate().is_ok());
     input.action_tools.clear();
