@@ -3,6 +3,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+mod catalog_filter;
+pub use catalog_filter::*;
 mod verification;
 pub use verification::*;
 mod progress;
