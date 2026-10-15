@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::ChatValidationError;
 
-pub const MAX_CHAT_PROGRESS_ROUND: u16 = 8;
+pub const MAX_CHAT_PROGRESS_ROUND: u16 = 16;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
