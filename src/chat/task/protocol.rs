@@ -26,6 +26,7 @@ pub enum TaskStopReason {
     NeedsInput,
     NoProgress,
     BudgetExhausted,
+    VerificationFailed,
     Running,
 }
 
@@ -92,6 +93,7 @@ pub enum ChatTaskResponse {
     Loaded {
         active: Option<TaskSnapshot>,
         scope_changed: bool,
+        recent_evidence: Vec<super::TaskEvidenceHeader>,
         current_message: TaskMessage,
         recent_messages: Vec<TaskMessage>,
     },

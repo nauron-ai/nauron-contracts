@@ -85,3 +85,10 @@ pub struct TaskEvidence {
     pub tool: String,
     pub source: ChatSource,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct TaskEvidenceHeader {
+    pub reference: TaskEvidenceRef,
+    pub tool: String,
+}
