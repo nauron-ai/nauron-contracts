@@ -13,6 +13,8 @@ mod datasets;
 pub use datasets::*;
 mod actions;
 pub use actions::*;
+mod task;
+pub use task::*;
 mod reporting;
 pub use reporting::*;
 mod search;

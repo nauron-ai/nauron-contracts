@@ -46,6 +46,7 @@ pub enum ChatActionResult {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ChatDataRequest {
+    Task(super::ChatTaskRequest),
     Query(ChatDataQuery),
     Action(ChatActionCall),
 }
@@ -53,6 +54,7 @@ pub enum ChatDataRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ChatDataResponse {
+    Task(super::ChatTaskResponse),
     Query(ChatDataPage),
     Action(ChatActionResult),
 }
@@ -60,6 +62,7 @@ pub enum ChatDataResponse {
 impl ChatDataRequest {
     pub fn validate(&self) -> Result<(), ChatValidationError> {
         match self {
+            Self::Task(request) => request.validate(),
             Self::Query(query) => query.validate(),
             Self::Action(call) => call.validate(),
         }
