@@ -48,3 +48,52 @@ fn user_rules_require_an_original_message_and_a_nonempty_quote() {
     state.instructions[0].quote = " ".into();
     assert!(state.validate().is_err());
 }
+
+#[test]
+fn original_input_access_requires_bounded_pages_and_valid_identity() {
+    assert!(
+        TaskInputQuery::List {
+            offset: 0,
+            limit: MAX_TASK_INPUT_HEADERS
+        }
+        .validate()
+        .is_ok()
+    );
+    assert!(
+        TaskInputQuery::List {
+            offset: 0,
+            limit: MAX_TASK_INPUT_HEADERS + 1
+        }
+        .validate()
+        .is_err()
+    );
+    assert!(
+        TaskInputQuery::Read {
+            message_id: Uuid::nil(),
+            offset: 0,
+            limit: 1
+        }
+        .validate()
+        .is_err()
+    );
+    assert!(
+        TaskInputQuery::Read {
+            message_id: Uuid::new_v4(),
+            offset: 0,
+            limit: MAX_TASK_INPUT_PAGE + 1
+        }
+        .validate()
+        .is_err()
+    );
+    let request = ChatTaskRequest::Input {
+        task_id: Uuid::new_v4(),
+        query: TaskInputQuery::Read {
+            message_id: Uuid::new_v4(),
+            offset: 0,
+            limit: MAX_TASK_INPUT_PAGE,
+        },
+    };
+    let encoded = serde_json::to_string(&request).unwrap();
+    let decoded: ChatTaskRequest = serde_json::from_str(&encoded).unwrap();
+    assert!(decoded.validate().is_ok());
+}

@@ -55,6 +55,10 @@ pub enum ChatTaskRequest {
         task_id: Uuid,
         reference: TaskEvidenceRef,
     },
+    Input {
+        task_id: Uuid,
+        query: super::TaskInputQuery,
+    },
     Search {
         query: String,
     },
@@ -63,6 +67,7 @@ pub enum ChatTaskRequest {
 impl ChatTaskRequest {
     pub fn validate(&self) -> Result<(), ChatValidationError> {
         match self {
+            Self::Input { query, .. } => query.validate()?,
             Self::Select { state, .. } | Self::Checkpoint { state, .. } => state.validate()?,
             Self::Search { query } if query.trim().is_empty() || query.len() > 200 => {
                 return Err(ChatValidationError::InvalidAction);
@@ -106,6 +111,13 @@ pub enum ChatTaskResponse {
     },
     Evidence {
         evidence: TaskEvidence,
+    },
+    Inputs {
+        messages: Vec<super::TaskInputHeader>,
+        has_more: bool,
+    },
+    Input {
+        page: super::TaskInputPage,
     },
     Tasks {
         tasks: Vec<TaskHeader>,
