@@ -36,6 +36,28 @@ pub struct FrozenPromptSourceIdentity {
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 #[serde(deny_unknown_fields)]
+pub struct FrozenPromptSourceReference {
+    pub source_ingest_job_id: String,
+    pub context_id: String,
+    pub document_ids: Vec<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct ResolveFrozenPromptSourceRequest {
+    pub target_key: String,
+    pub source: FrozenPromptSourceReference,
+}
+
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct ResolveFrozenPromptSourceResponse {
+    pub target_key: String,
+    pub source: FrozenPromptSourceIdentity,
+}
+
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
+#[serde(deny_unknown_fields)]
 pub struct FrozenPrompt {
     pub role: FrozenPromptRole,
     pub prompt_id: String,
